@@ -19,7 +19,7 @@ import DrinkById from './pages/DrinkById';
 import FoodById from './pages/FoodById';
 import FoodByIdInProgress from './pages/FoodByIdInProgress';
 import DrinkByIdInProgress from './pages/DrinkByIdInProgress';
-import FoodByArea from './pages/ExploreFoodByArea'
+import FoodByArea from './pages/ExploreFoodByArea';
 
 function App() {
   return (

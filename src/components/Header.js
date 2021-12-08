@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Header({ title, showSearchIcon = true }) {
+  const [showSearchInput, setShowSearchInput] = useState(false);
+
+  const toggleSearchInput = () => {
+    setShowSearchInput(!showSearchInput);
+  };
+
   return (
     <div>
       <Link to="/perfil">
@@ -13,13 +19,15 @@ export default function Header({ title, showSearchIcon = true }) {
         />
       </Link>
       <h1 data-testid="page-title">{ title }</h1>
-      <Link to="/explorar">
+      <button type="button" onClick={ toggleSearchInput }>
         { showSearchIcon && (<img
           src="/images/searchIcon.svg"
           alt="search icon"
           data-testid="search-top-btn"
         />)}
-      </Link>
+      </button>
+      { showSearchIcon && showSearchInput
+      && <input type="text" data-testid="search-input" />}
     </div>
   );
 }
