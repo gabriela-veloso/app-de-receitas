@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router';
 import RecipesContext from '../contexts/RecipesContext';
 
 function Login() {
@@ -9,6 +10,20 @@ function Login() {
     password,
     disabled,
   } = useContext(RecipesContext);
+
+  const history = useHistory();
+  console.log(history);
+
+  const HandleSubmit = (e) => {
+    e.preventDefault();
+    localStorage.setItem('mealsToken', '1');
+    localStorage.setItem('cocktailsToken', '1');
+    const saveEmail = JSON.stringify({ email });
+    localStorage.setItem('user', saveEmail);
+    if (localStorage.getItem('user')) {
+      history.push('/comidas');
+    }
+  };
 
   return (
     <div>
@@ -32,7 +47,7 @@ function Login() {
         type="button"
         data-testid="login-submit-btn"
         disabled={ disabled }
-        // onClick={ handleSubmit }
+        onClick={ HandleSubmit }
       >
         Enviar
       </button>
