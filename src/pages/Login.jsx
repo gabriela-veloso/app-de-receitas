@@ -32,7 +32,7 @@ function Login() {
         type="button"
         data-testid="login-submit-btn"
         disabled={ disabled }
-        onClick={ handleSubmit }
+        // onClick={ handleSubmit }
       >
         Enviar
       </button>
