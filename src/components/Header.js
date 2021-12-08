@@ -19,13 +19,17 @@ export default function Header({ title, showSearchIcon = true }) {
         />
       </Link>
       <h1 data-testid="page-title">{ title }</h1>
-      <button type="button" onClick={ toggleSearchInput }>
-        { showSearchIcon && (<img
-          src="/images/searchIcon.svg"
-          alt="search icon"
-          data-testid="search-top-btn"
-        />)}
-      </button>
+      {
+        showSearchIcon
+      && (
+        <button type="button" onClick={ toggleSearchInput }>
+          <img
+            src="/images/searchIcon.svg"
+            alt="search icon"
+            data-testid="search-top-btn"
+          />
+        </button>)
+      }
       { showSearchIcon && showSearchInput
       && <input type="text" data-testid="search-input" />}
     </div>
