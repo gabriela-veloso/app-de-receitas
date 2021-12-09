@@ -6,7 +6,7 @@ import RecipesContext from '../contexts/RecipesContext';
 import * as comidasApi from '../services/comidasApi';
 import * as bebidasApi from '../services/bebidasApi';
 
-export default function Header({ title, showSearchIcon = true }) {
+export default function Header({ title, showSearchIcon }) {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState('');
   const [inputTextValue, setInputTextValue] = useState('');
@@ -21,7 +21,7 @@ export default function Header({ title, showSearchIcon = true }) {
     setShowSearchInput(!showSearchInput);
   };
 
-  function Redirect(data, string) {
+  function Redirect(data) {
     if (data.length === 1 && title === 'Comidas') {
       return history.push(`/comidas/${data[0].idMeal}`);
     }
@@ -34,18 +34,15 @@ export default function Header({ title, showSearchIcon = true }) {
     if (category === 'ingredient') {
       const data = await comidasApi.fetchFoodByIngredients(string);
       setMealsData(data);
-      console.log(data);
-      Redirect(data, 'comidas');
+      Redirect(data);
     } else if (category === 'name') {
       const data = await comidasApi.fetchFoodByName(string);
       setMealsData(data);
-      console.log(data);
-      Redirect(data, 'comidas');
+      Redirect(data);
     } else {
       const data = await comidasApi.fetchFoodByLetter(string);
       setMealsData(data);
-      console.log(data);
-      Redirect(data, 'comidas');
+      Redirect(data);
     }
   };
 
@@ -53,21 +50,20 @@ export default function Header({ title, showSearchIcon = true }) {
     if (category === 'ingredient') {
       const data = await bebidasApi.fetchDrinkByIngredients(string);
       setDrinksData(data);
-      Redirect(data, 'bebidas');
+      Redirect(data);
     } else if (category === 'name') {
       const data = await bebidasApi.fetchDrinkByName(string);
       setDrinksData(data);
-      Redirect(data, 'bebidas');
+      Redirect(data);
     } else {
       const data = await bebidasApi.fetchDrinkByLetter(string);
       setDrinksData(data);
-      Redirect(data, 'bebidas');
+      Redirect(data);
     }
   };
 
   async function HandleClickSearch() {
     const ONE = 1;
-    console.log(selectedRadio, inputTextValue, title);
     if (selectedRadio === 'first-letter' && inputTextValue.length > ONE) {
       global.alert('Sua busca deve conter somente 1 (um) caracter');
       return;
@@ -81,7 +77,6 @@ export default function Header({ title, showSearchIcon = true }) {
   }
 
   function selectRadio(value) {
-    console.log(value);
     setSelectedRadio(value);
   }
 
@@ -165,6 +160,10 @@ export default function Header({ title, showSearchIcon = true }) {
 }
 
 Header.propTypes = {
-  showSearchIcon: PropTypes.bool.isRequired,
+  showSearchIcon: PropTypes.bool,
   title: PropTypes.string.isRequired,
+};
+
+Header.defaultProps = {
+  showSearchIcon: true,
 };
