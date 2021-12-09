@@ -12,7 +12,6 @@ function Login() {
   } = useContext(RecipesContext);
 
   const history = useHistory();
-  console.log(history);
 
   const HandleSubmit = (e) => {
     e.preventDefault();
