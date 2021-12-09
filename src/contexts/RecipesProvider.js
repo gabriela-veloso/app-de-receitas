@@ -2,10 +2,14 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import RecipesContext from './RecipesContext';
 
-export default function RecipesProvider({ children }) {
+
+function RecipesProvider({ children }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [disabled, setDisabled] = useState(true);
+  const [mealsData, setMealsData] = useState([]);
+  const [drinksData, setDrinksData] = useState([]);
+
 
   const NUMBER_SIX = 6;
 
@@ -35,6 +39,10 @@ export default function RecipesProvider({ children }) {
     email,
     password,
     disabled,
+    mealsData,
+    drinksData,
+    setMealsData,
+    setDrinksData,
   };
 
   return (
@@ -47,3 +55,5 @@ export default function RecipesProvider({ children }) {
 RecipesProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+export default RecipesProvider;
