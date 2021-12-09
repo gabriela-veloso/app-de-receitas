@@ -14,6 +14,7 @@ export default function RecipesProvider({ children }) {
   const getMealsData = async (string, category) => {
     if (category === 'ingredient') {
       const data = await comidasApi.fetchFoodByIngredients(string);
+      console.log(data);
       setMealsData(data);
     } else if (category === 'name') {
       const data = await comidasApi.fetchFoodByName(string);
@@ -24,18 +25,18 @@ export default function RecipesProvider({ children }) {
     }
   };
 
-  // const getDrinksData = async (string, category) => {
-  //   if (category === 'ingredient') {
-  //     const data = await bebidasApi.fetchDrinksByIngredients(string);
-  //     setMealsData(data);
-  //   } else if (category === 'name') {
-  //     const data = await bebidasApi.fetchDrinksByName(string);
-  //     setMealsData(data);
-  //   } else {
-  //     const data = await bebidasApi.fetchDrinksByLetter(string);
-  //     setMealsData(data);
-  //   }
-  // };
+  const getDrinksData = async (string, category) => {
+    if (category === 'ingredient') {
+      const data = await bebidasApi.fetchDrinkByIngredients(string);
+      setDrinksData(data);
+    } else if (category === 'name') {
+      const data = await bebidasApi.fetchDrinkByName(string);
+      setDrinksData(data);
+    } else {
+      const data = await bebidasApi.fetchDrinkByLetter(string);
+      setDrinksData(data);
+    }
+  };
 
   const NUMBER_SIX = 6;
 
@@ -65,7 +66,10 @@ export default function RecipesProvider({ children }) {
     email,
     password,
     disabled,
+    mealsData,
     getMealsData,
+    drinksData,
+    getDrinksData,
   };
 
   return (

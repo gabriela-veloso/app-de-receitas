@@ -1,31 +1,32 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import RecipesContext from '../contexts/RecipesContext';
 
 export default function Header({ title, showSearchIcon = true }) {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [selectedRadio, setSelectedRadio] = useState('');
   const [inputTextValue, setInputTextValue] = useState('');
+  const { getMealsData, getDrinksData } = useContext(RecipesContext);
 
   const toggleSearchInput = () => {
     setShowSearchInput(!showSearchInput);
   };
 
-  function handleClickSearch() {
-    switch (selectedRadio) {
-    case 'ingredient':
-      break;
-    case 'first-letter':
-      if (inputTextValue.length > 1) {
-        return global.alert('Sua busca deve conter somente 1 (um) caracter');
-      }
-      break;
-    default:
-      break;
+  function HandleClickSearch() {
+    if (inputTextValue.length > 1 && selectedRadio === 'first-letter') {
+      return global.alert('Sua busca deve conter somente 1 (um) caracter');
+    }
+    if (title === 'Comidas') {
+      getMealsData(inputTextValue, selectedRadio);
+    }
+    if (title === 'Bebidas') {
+      getDrinksData(inputTextValue, selectedRadio);
     }
   }
 
-  function selectRadio({ value }) {
+  function selectRadio(value) {
+    console.log(value);
     setSelectedRadio(value);
   }
 
@@ -70,7 +71,7 @@ export default function Header({ title, showSearchIcon = true }) {
               name="filter-radio"
               value="ingredient"
               data-testid="ingredient-search-radio"
-              onChange={ selectRadio }
+              onChange={ ({ target }) => selectRadio(target.value) }
             />
           </label>
           <label htmlFor="name">
@@ -81,7 +82,7 @@ export default function Header({ title, showSearchIcon = true }) {
               name="filter-radio"
               value="name"
               data-testid="name-search-radio"
-              onChange={ selectRadio }
+              onChange={ ({ target }) => selectRadio(target.value) }
             />
           </label>
           <label htmlFor="first-letter">
@@ -92,13 +93,13 @@ export default function Header({ title, showSearchIcon = true }) {
               name="filter-radio"
               value="first-letter"
               data-testid="first-letter-search-radio"
-              onChange={ selectRadio }
+              onChange={ ({ target }) => selectRadio(target.value) }
             />
           </label>
           <button
             type="button"
             data-testid="exec-search-btn"
-            onClick={ handleClickSearch }
+            onClick={ HandleClickSearch }
           >
             Buscar
 
