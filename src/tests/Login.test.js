@@ -7,7 +7,6 @@ import App from '../App';
 const EMAIL_TEST_ID = 'email-input';
 const PASSWORD_TEST_ID = 'password-input';
 const BUTTON_TEST_ID = 'login-submit-btn';
-const EMAIL_TEST = 'teste@teste.com';
 
 describe('Testando a página de Login', () => {
   let history = {};
