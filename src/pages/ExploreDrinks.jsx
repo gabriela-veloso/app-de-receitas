@@ -20,6 +20,7 @@ export default function ExploreDrinks() {
         <button
           type="button"
           data-testid="explore-by-ingredient"
+          className="btn buttons"
           onClick={ () => history.push('/explorar/bebidas/ingredientes') }
         >
           Por Ingredientes
@@ -27,6 +28,7 @@ export default function ExploreDrinks() {
         <button
           type="button"
           data-testid="explore-surprise"
+          className="btn buttons"
           onClick={ randomDrink }
         >
           Me Surpreenda!

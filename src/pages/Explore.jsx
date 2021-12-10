@@ -12,6 +12,7 @@ export default function Explore() {
         <button
           type="button"
           data-testid="explore-food"
+          className="btn buttons"
           onClick={ () => history.push('/explorar/comidas') }
         >
           Explorar Comidas
@@ -19,6 +20,7 @@ export default function Explore() {
         <button
           type="button"
           data-testid="explore-drinks"
+          className="btn buttons"
           onClick={ () => history.push('/explorar/bebidas') }
         >
           Explorar Bebidas

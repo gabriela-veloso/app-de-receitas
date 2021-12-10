@@ -46,19 +46,71 @@ export function fecthFoodById(id) {
 }
 
 export async function fetchFoodCategories() {
-  const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
-  const json = await response.json();
-  return json.meals;
+  try {
+    const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
+    const json = await response.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function fetchRecommendedMeals() {
+  try {
+    const res = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+    const json = await res.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 
 export async function fetchRandomMeal() {
-  const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
-  const json = await response.json();
-  return json.meals;
+  try {
+    const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+    const json = await response.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 
 export async function fetchFoodOnLoad() {
-  const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-  const json = await response.json();
-  return json.meals;
+  try {
+    const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+    const json = await response.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function fetchAllFoodIngredients() {
+  try {
+    const res = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
+    const json = await res.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function fetchAreas() {
+  try {
+    const res = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list');
+    const json = await res.json();
+    return json.meals;
+  } catch (error) {
+    console.log('eeror', error);
+  }
+}
+
+export async function fetchFoodsByArea(area) {
+  try {
+    const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`);
+    const json = await res.json();
+    return json.meals;
+  } catch (error) {
+    console.log('error', error);
+  }
 }
