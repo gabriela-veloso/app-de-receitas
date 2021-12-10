@@ -6,6 +6,7 @@ import RecipesContext from '../contexts/RecipesContext';
 import * as comidasApi from '../services/comidasApi';
 import * as bebidasApi from '../services/bebidasApi';
 import '../styles/searchIcon.css';
+import '../styles/buttons.css';
 
 export default function Header({ title, showSearchIcon }) {
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -112,7 +113,7 @@ export default function Header({ title, showSearchIcon }) {
       </header>
       { showSearchIcon && showSearchInput
       && (
-        <div className="searchbar">
+        <div className="form_bar">
           <input
             type="text"
             data-testid="search-input"
@@ -158,7 +159,7 @@ export default function Header({ title, showSearchIcon }) {
             type="button"
             data-testid="exec-search-btn"
             onClick={ HandleClickSearch }
-            className="btn btn-light"
+            className="buttons"
           >
             Buscar
           </button>

@@ -32,7 +32,7 @@ export async function fetchDrinkByCategories(category) {
   try {
     const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${category}`);
     const json = await response.json();
-    return json.meals;
+    return json.drinks;
   } catch (error) {
     console.log('error', error);
   }
@@ -46,19 +46,51 @@ export function fetchDrinkById(id) {
 }
 
 export async function fetchDrinkCategories() {
-  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
-  const json = await response.json();
-  return json.drinks;
+  try {
+    const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
+    const json = await response.json();
+    return json.drinks;
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 
 export async function fetchRandomDrink() {
-  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
-  const json = await response.json();
-  return json.drinks;
+  try {
+    const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
+    const json = await response.json();
+    return json.drinks;
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 
 export async function fetchDrinkOnLoad() {
-  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-  const json = await response.json();
-  return json.drinks;
+  try {
+    const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
+    const json = await response.json();
+    return json.drinks;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function fetchRecommendedDrinks() {
+  try {
+    const res = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
+    const json = await res.json();
+    return json.drinks;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function fetchAllDrinksIngredients() {
+  try {
+    const res = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list');
+    const json = await res.json();
+    return json.drinks;
+  } catch (error) {
+    console.log('error', error);
+  }
 }

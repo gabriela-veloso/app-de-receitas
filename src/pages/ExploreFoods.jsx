@@ -20,6 +20,7 @@ export default function ExploreFoods() {
         <button
           type="button"
           data-testid="explore-by-ingredient"
+          className="buttons"
           onClick={ () => history.push('/explorar/comidas/ingredientes') }
         >
           Por Ingredientes
@@ -28,6 +29,7 @@ export default function ExploreFoods() {
         <button
           type="button"
           data-testid="explore-by-area"
+          className="buttons"
           onClick={ () => history.push('/explorar/comidas/area') }
         >
           Por Local de Origem
@@ -36,6 +38,7 @@ export default function ExploreFoods() {
         <button
           type="button"
           data-testid="explore-surprise"
+          className="btn buttons"
           onClick={ randomMeal }
         >
           Me Surpreenda!
