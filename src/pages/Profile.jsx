@@ -30,8 +30,8 @@ export default function Profile() {
   return (
     <div>
       <Header title="Perfil" showSearchIcon={ false } />
-        <div className="container container-profile">
-        <div className="text-email">
+      <div>
+        <div>
           <p data-testid="profile-email">{ email }</p>
         </div>
         <div className="select-buttons buttons-alignment">
@@ -39,7 +39,6 @@ export default function Profile() {
             type="button"
             data-testid="profile-done-btn"
             onClick={ () => handleClickFavorite() }
-            className="buttons"
           >
             Receitas Feitas
           </button>
@@ -47,7 +46,6 @@ export default function Profile() {
             type="button"
             data-testid="profile-favorite-btn"
             onClick={ () => handleClickDone() }
-            className="buttons"
           >
             Receitas Favoritas
           </button>
@@ -55,7 +53,6 @@ export default function Profile() {
             type="button"
             data-testid="profile-logout-btn"
             onClick={ () => logout() }
-            className="buttons"
           >
             Sair
           </button>
