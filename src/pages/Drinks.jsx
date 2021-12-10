@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 
 export default function Drinks() {
   const { drinksData } = useContext(RecipesContext);
-  console.log(drinksData);
   const MAX_NUM = 12;
 
   return (
