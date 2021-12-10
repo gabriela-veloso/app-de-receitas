@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+.searchbar {
+  background-color: #353b48;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  height: 40px;
+  margin-bottom: auto;
+  margin-top: auto;
+  padding: 10px;
+  width: 250px;
+}
+
+.search_input {
+  background: none;
+  border: 0;
+  caret-color: #c0392b;
+  color: white;
+  line-height: 20px;
+  margin-bottom: 15px;
+  outline: 0;
+  padding: 0 10px;
+  transition: width 0.4s linear;
+  width: 250px;
+}
+
+.searchbar:hover > .search_icon {
+  background: white;
+  color: #c0392b;
+}

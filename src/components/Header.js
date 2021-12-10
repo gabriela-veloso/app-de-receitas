@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import RecipesContext from '../contexts/RecipesContext';
 import * as comidasApi from '../services/comidasApi';
 import * as bebidasApi from '../services/bebidasApi';
+import '../styles/searchIcon.css';
 
 export default function Header({ title, showSearchIcon }) {
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -99,8 +100,9 @@ export default function Header({ title, showSearchIcon }) {
         {
           showSearchIcon
         && (
-          <button type="button" onClick={ toggleSearchInput }>
+          <button type="button" onClick={ toggleSearchInput } className="btn">
             <img
+              className="fas search_icon"
               src="/images/searchIcon.svg"
               alt="search icon"
               data-testid="search-top-btn"
@@ -110,14 +112,15 @@ export default function Header({ title, showSearchIcon }) {
       </header>
       { showSearchIcon && showSearchInput
       && (
-        <div>
+        <div className="searchbar">
           <input
             type="text"
             data-testid="search-input"
             value={ inputTextValue }
             onChange={ ({ target }) => setInputTextValue(target.value) }
+            placeholder="Search.."
+            className="search_input"
           />
-          <br />
           <label htmlFor="ingredient">
             Ingrediente
             <input
@@ -155,9 +158,9 @@ export default function Header({ title, showSearchIcon }) {
             type="button"
             data-testid="exec-search-btn"
             onClick={ HandleClickSearch }
+            className="btn btn-light"
           >
             Buscar
-
           </button>
         </div>)}
     </div>
