@@ -1,55 +1,21 @@
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router';
-import RecipesContext from '../contexts/RecipesContext';
+import React from 'react';
+import InputEmail from '../components/inputEmail';
+import Logo from '../components/logo';
+import '../styles/login.css';
 
 function Login() {
-  const {
-    handleEmail,
-    handlePassword,
-    email,
-    password,
-    disabled,
-  } = useContext(RecipesContext);
-
-  const history = useHistory();
-
-  const HandleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem('mealsToken', '1');
-    localStorage.setItem('cocktailsToken', '1');
-    const saveEmail = JSON.stringify({ email });
-    localStorage.setItem('user', saveEmail);
-    if (localStorage.getItem('user')) {
-      history.push('/comidas');
-    }
-  };
-
   return (
-    <div>
-      <label htmlFor="email">
-        <input
-          type="email"
-          data-testid="email-input"
-          value={ email }
-          onChange={ handleEmail }
-        />
-      </label>
-      <label htmlFor="password">
-        <input
-          type="password"
-          data-testid="password-input"
-          value={ password }
-          onChange={ handlePassword }
-        />
-      </label>
-      <button
-        type="button"
-        data-testid="login-submit-btn"
-        disabled={ disabled }
-        onClick={ HandleSubmit }
-      >
-        Enviar
-      </button>
+    <div className="container h-100">
+      <div className="d-flex justify-content-center h-100">
+        <div className="user_card">
+          <div className="d-flex justify-content-center">
+            <Logo />
+          </div>
+          <div className="d-flex justify-content-center form_container">
+            <InputEmail />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
