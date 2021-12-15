@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import RecommendedRecipes from '../components/RecommendedRecipes';
+import { fetchRecommendedDrinks } from '../services/bebidasApi';
+import '../styles/recommended.css';
 
 export default function FoodById({ match }) {
   const { foodId: id } = match.params;
   const index = 0;
   const [meal, setMeal] = useState({});
+  const [recommended, setRecommended] = useState([]);
 
   const ingredients = Object.keys(meal)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -19,7 +22,6 @@ export default function FoodById({ match }) {
     try {
       const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
       const json = await res.json();
-      console.log(json.meals);
       const mealRecipe = json.meals[0];
       setMeal(mealRecipe);
       return mealRecipe;
@@ -28,26 +30,30 @@ export default function FoodById({ match }) {
     }
   };
 
+  async function fetchByRedomendedDrink() {
+    const recommendation = await fetchRecommendedDrinks();
+    setRecommended(recommendation);
+  }
+
   useEffect(() => {
     fetchById();
+    fetchByRedomendedDrink();
   }, []);
 
-  console.log(meal);
-
   return (
-    <div>
+    <div className="page-container">
       <div>
         <h2 data-testid="recipe-category">{meal.strCategory}</h2>
         <h2 data-testid="recipe-title">{meal.strMeal}</h2>
         <img
           data-testid="recipe-photo"
           alt={ meal.strMeal }
-          width="50"
           src={ meal.strMealThumb }
+          width="200"
         />
         {ingredients.map((ingredient, i) => (
           <li
-            key={ `${ingredient}` }
+            key={ `${ingredient}-${i}` }
             data-testid={ `${i}-ingredient-name-and-measure` }
           >
             {`${ingredient} - ${measures[i]}`}
@@ -55,16 +61,22 @@ export default function FoodById({ match }) {
         <div data-testid="instructions">{meal.strInstructions}</div>
         <h3>Vídeo</h3>
         <iframe
-          width="360"
+          width="340"
           height="200"
-          title="receita"
-          src={ meal.length > 0 ? meal.strYoutube.replace('watch?v=', 'embed/') : '' }
+          title={ meal.strMeal }
+          src={ meal.strYoutube }
           data-testid="video"
         />
         <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
         <button type="button" data-testid="share-btn">Compartilhar</button>
         <button type="button" data-testid="favorite-btn">Favoritar</button>
-        <RecommendedRecipes index={ index } />
+        <div className="recommended-container">
+          <RecommendedRecipes
+            index={ index }
+            recommended={ recommended }
+            type="meal"
+          />
+        </div>
       </div>
     </div>
   );

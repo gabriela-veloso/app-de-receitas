@@ -1,0 +1,27 @@
+.page-container {
+  padding: 20px;
+}
+
+.recommended-container {
+  display: flex;
+  margin: 10px auto;
+  overflow-y: hidden;
+  padding-bottom: 35px;
+  width: 90%;
+}
+
+.recommended-card {
+  background-color: wheat;
+  border-radius: 5px;
+  box-sizing: border-box;
+  height: 500px;
+  margin-right: 4%;
+  min-width: 48%;
+  padding: 15px;
+  text-align: center;
+
+}
+
+.recomemended-card:last-child {
+  margin-right: 0;
+}

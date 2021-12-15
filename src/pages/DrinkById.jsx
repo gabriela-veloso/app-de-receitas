@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import RecommendedRecipes from '../components/RecommendedRecipes';
+import { fetchRecommendedMeals } from '../services/comidasApi';
 
 export default function DrinkById({ match }) {
   const { drinkId: id } = match.params;
   const index = 0;
   const [drink, setDrink] = useState({});
+  const [recommended, setRecommended] = useState();
 
   const ingredients = Object.keys(drink)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -28,8 +30,13 @@ export default function DrinkById({ match }) {
     }
   };
 
+  function fetchByRecomendedMeal() {
+    setRecommended(fetchRecommendedMeals());
+  }
+
   useEffect(() => {
     fetchById();
+    fetchByRecomendedMeal();
   }, []);
 
   return (
@@ -41,7 +48,6 @@ export default function DrinkById({ match }) {
         <img
           data-testid="recipe-photo"
           alt={ drink.strDrink }
-          width="50"
           src={ drink.strDrinkThumb }
         />
         {ingredients.map((ingredient, i) => (
@@ -55,7 +61,7 @@ export default function DrinkById({ match }) {
         <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
         <button type="button" data-testid="share-btn">Compartilhar</button>
         <button type="button" data-testid="favorite-btn">Favoritar</button>
-        <RecommendedRecipes index={ index } />
+        <RecommendedRecipes index={ index } recommended={ recommended } type="drink" />
       </div>
     </div>
   );
