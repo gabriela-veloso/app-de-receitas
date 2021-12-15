@@ -85,7 +85,7 @@ export default function MainPage() {
             data-testid={ `${index}-card-img` }
             src={ elem.strMealThumb }
             alt="Imagem da receita"
-            width="50"
+            width="200"
           />
           <h3
             data-testid={ `${index}-card-name` }
