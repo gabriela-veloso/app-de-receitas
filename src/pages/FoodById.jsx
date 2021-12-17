@@ -38,7 +38,7 @@ export default function FoodById({ match }) {
   useEffect(() => {
     fetchById();
     fetchByRedomendedDrink();
-  }, []);
+  });
 
   return (
     <div className="page-container">

@@ -37,7 +37,7 @@ export default function DrinkById({ match }) {
   useEffect(() => {
     fetchById();
     fetchByRecomendedMeal();
-  }, []);
+  });
 
   return (
     <div>
