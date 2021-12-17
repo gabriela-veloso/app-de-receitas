@@ -62,7 +62,7 @@ export default function Drinks() {
       >
         All
       </button>
-      {categories.slice(0, FIVE).map((category) => (
+      {categories && categories.slice(0, FIVE).map((category) => (
         <button
           type="button"
           name="category"
