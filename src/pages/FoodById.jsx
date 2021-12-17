@@ -30,15 +30,15 @@ export default function FoodById({ match }) {
     }
   };
 
-  async function fetchByRedomendedDrink() {
+  async function fetchByRecommendedDrink() {
     const recommendation = await fetchRecommendedDrinks();
     setRecommended(recommendation);
   }
 
   useEffect(() => {
     fetchById();
-    fetchByRedomendedDrink();
-  });
+    fetchByRecommendedDrink();
+  }, []);
 
   return (
     <div className="page-container">
