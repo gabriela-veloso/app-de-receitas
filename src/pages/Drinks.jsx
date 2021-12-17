@@ -20,9 +20,11 @@ export default function Drinks() {
 
   useEffect(() => {
     async function handleDrinksOnLoad() {
-      if (drinksData.length === 0) {
+      if ((drinksData && drinksData.length === 0) || !drinksData) {
         const dataDrinks = await fetchDrinkOnLoad();
         setDrinks(dataDrinks);
+      } else {
+        setDrinks(drinksData);
       }
     }
     handleDrinksOnLoad();
@@ -87,7 +89,7 @@ export default function Drinks() {
             data-testid={ `${index}-card-img` }
             src={ elem.strDrinkThumb }
             alt="drinksCard"
-            width="50"
+            width="200"
           />
           <h3
             data-testid={ `${index}-card-name` }

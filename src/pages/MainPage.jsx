@@ -29,6 +29,7 @@ export default function MainPage() {
       }
     }
     handleMealsOnLoad();
+
     async function handleCategories() {
       const dataCategories = await fetchFoodCategories();
       setCategories(dataCategories);
