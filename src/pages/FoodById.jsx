@@ -18,27 +18,27 @@ export default function FoodById({ match }) {
     .filter((measure) => measure.includes('strMeasure'))
     .map((measure) => meal[measure]);
 
-  const fetchById = async () => {
-    try {
-      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const json = await res.json();
-      const mealRecipe = json.meals[0];
-      setMeal(mealRecipe);
-      return mealRecipe;
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  async function fetchByRecommendedDrink() {
-    const recommendation = await fetchRecommendedDrinks();
-    setRecommended(recommendation);
-  }
-
   useEffect(() => {
+    const fetchById = async () => {
+      try {
+        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+        const json = await res.json();
+        const mealRecipe = json.meals[0];
+        setMeal(mealRecipe);
+        return mealRecipe;
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+
+    async function fetchByRecommendedDrink() {
+      const recommendation = await fetchRecommendedDrinks();
+      setRecommended(recommendation);
+    }
+
     fetchById();
     fetchByRecommendedDrink();
-  }, []);
+  }, [id]);
 
   return (
     <div className="page-container">

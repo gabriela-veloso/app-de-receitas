@@ -17,27 +17,27 @@ export default function DrinkById({ match }) {
     .filter((measure) => measure.includes('strMeasure'))
     .map((measure) => drink[measure]);
 
-  const fetchById = async () => {
-    try {
-      const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const json = await res.json();
-      const drinkRecipe = json.drinks[0];
-      setDrink(drinkRecipe);
-      return drinkRecipe;
-    } catch (error) {
-      console.log('ERRO DE REQUISIÇÃO', error);
-    }
-  };
-
-  async function fetchByRecommendedMeal() {
-    const recommendation = await fetchRecommendedMeals();
-    setRecommended(recommendation);
-  }
-
   useEffect(() => {
+    const fetchById = async () => {
+      try {
+        const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
+        const json = await res.json();
+        const drinkRecipe = json.drinks[0];
+        setDrink(drinkRecipe);
+        return drinkRecipe;
+      } catch (error) {
+        console.log('ERRO DE REQUISIÇÃO', error);
+      }
+    };
+
+    async function fetchByRecommendedMeal() {
+      const recommendation = await fetchRecommendedMeals();
+      setRecommended(recommendation);
+    }
+
     fetchById();
     fetchByRecommendedMeal();
-  }, []);
+  }, [id]);
 
   return (
     <div>

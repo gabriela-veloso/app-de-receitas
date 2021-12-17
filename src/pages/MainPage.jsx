@@ -53,8 +53,6 @@ export default function MainPage() {
     return setMeals(dataCategories);
   }
 
-  console.log(mealsData);
-
   return (
     <div>
       <Header title="Comidas" />
