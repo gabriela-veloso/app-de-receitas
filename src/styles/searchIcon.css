@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 30px 0;
-  position: absolute;
+  /* position: absolute; */
   top: 73px;
   width: 100%;
   z-index: 2;
