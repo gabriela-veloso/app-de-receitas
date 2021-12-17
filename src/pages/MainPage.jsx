@@ -21,9 +21,11 @@ export default function MainPage() {
 
   useEffect(() => {
     async function handleMealsOnLoad() {
-      if (mealsData.length === 0) {
+      if ((mealsData && mealsData.length === 0) || !mealsData) {
         const food = await fetchFoodOnLoad();
         setMeals(food);
+      } else {
+        setMeals(mealsData);
       }
     }
     handleMealsOnLoad();
@@ -50,6 +52,9 @@ export default function MainPage() {
     setFilterCategory('');
     return setMeals(dataCategories);
   }
+
+  console.log(mealsData);
+
   return (
     <div>
       <Header title="Comidas" />

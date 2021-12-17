@@ -24,7 +24,6 @@ export default function Header({ title, showSearchIcon }) {
   };
 
   function Redirect(data) {
-    console.log(data);
     if (!data) {
       const ALERT = 'Sinto muito, não encontramos nenhuma receita para esses filtros.';
       return global.alert(ALERT);
