@@ -7,7 +7,7 @@ export default function DrinkById({ match }) {
   const { drinkId: id } = match.params;
   const index = 0;
   const [drink, setDrink] = useState({});
-  const [recommended, setRecommended] = useState();
+  const [recommended, setRecommended] = useState([]);
 
   const ingredients = Object.keys(drink)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -17,27 +17,27 @@ export default function DrinkById({ match }) {
     .filter((measure) => measure.includes('strMeasure'))
     .map((measure) => drink[measure]);
 
-  const fetchById = async () => {
-    try {
-      const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const json = await res.json();
-      console.log(json.drinks);
-      const drinkRecipe = json.drinks[0];
-      setDrink(drinkRecipe);
-      return drinkRecipe;
-    } catch (error) {
-      console.log('ERRO DE REQUISIÇÃO', error);
-    }
-  };
-
-  function fetchByRecomendedMeal() {
-    setRecommended(fetchRecommendedMeals());
-  }
-
   useEffect(() => {
+    const fetchById = async () => {
+      try {
+        const res = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
+        const json = await res.json();
+        const drinkRecipe = json.drinks[0];
+        setDrink(drinkRecipe);
+        return drinkRecipe;
+      } catch (error) {
+        console.log('ERRO DE REQUISIÇÃO', error);
+      }
+    };
+
+    async function fetchByRecommendedMeal() {
+      const recommendation = await fetchRecommendedMeals();
+      setRecommended(recommendation);
+    }
+
     fetchById();
-    fetchByRecomendedMeal();
-  }, []);
+    fetchByRecommendedMeal();
+  }, [id]);
 
   return (
     <div>
@@ -52,7 +52,7 @@ export default function DrinkById({ match }) {
         />
         {ingredients.map((ingredient, i) => (
           <li
-            key={ `${ingredient}` }
+            key={ `${ingredient}-${i}` }
             data-testid={ `${i}-ingredient-name-and-measure` }
           >
             {`${ingredient} - ${measures[i]}`}

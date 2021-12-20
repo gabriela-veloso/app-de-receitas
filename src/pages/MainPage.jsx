@@ -21,12 +21,15 @@ export default function MainPage() {
 
   useEffect(() => {
     async function handleMealsOnLoad() {
-      if (mealsData.length === 0) {
+      if ((mealsData && mealsData.length === 0) || !mealsData) {
         const food = await fetchFoodOnLoad();
         setMeals(food);
+      } else {
+        setMeals(mealsData);
       }
     }
     handleMealsOnLoad();
+
     async function handleCategories() {
       const dataCategories = await fetchFoodCategories();
       setCategories(dataCategories);
@@ -50,6 +53,7 @@ export default function MainPage() {
     setFilterCategory('');
     return setMeals(dataCategories);
   }
+
   return (
     <div>
       <Header title="Comidas" />
@@ -61,7 +65,7 @@ export default function MainPage() {
       >
         All
       </button>
-      {categories.slice(0, FIVE).map((category) => (
+      {categories && categories.slice(0, FIVE).map((category) => (
         <button
           type="button"
           name="category"

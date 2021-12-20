@@ -8,9 +8,10 @@ export default function RecommendedRecipes({ index, recommended, type }) {
     return (
       <div className="recommended-card">
         {
-          recommended.slice(0, MAX_RECOMMENDED).map((rec) => (
-            <div key={ rec.strDrinks } data-testid={ `${index}-recomendation-card` }>
-              <h2 data-testid="recipe-category">{rec.strCategory}</h2>
+          recommended && recommended.slice(0, MAX_RECOMMENDED).map((rec) => (
+            <div key={ rec.strDrink } data-testid={ `${index}-recomendation-card` }>
+              <h2>{rec.strCategory}</h2>
+              <h2>{rec.strDrink}</h2>
               <img src={ rec.strDrinkThumb } width="200" alt={ rec.strDrink } />
             </div>))
         }
@@ -21,9 +22,10 @@ export default function RecommendedRecipes({ index, recommended, type }) {
   return (
     <div className="recommended-card">
       {
-        recommended.slice(0, MAX_RECOMMENDED).map((rec) => (
-          <div key={ rec.strDrinks } data-testid={ `${index}-recomendation-card` }>
-            <h2 data-testid="recipe-category">{rec.strCategory}</h2>
+        recommended && recommended.slice(0, MAX_RECOMMENDED).map((rec) => (
+          <div key={ rec.strMeal } data-testid={ `${index}-recomendation-card` }>
+            <h2>{rec.strCategory}</h2>
+            <h2>{rec.strMeal}</h2>
             <img src={ rec.strMealThumb } alt={ rec.strMeal } />
           </div>))
       }
