@@ -8,7 +8,6 @@
   overflow-y: hidden;
   padding-bottom: 35px;
   width: 90%;
-  
 }
 
 .recommended-card {
@@ -20,10 +19,9 @@
   height: 500px;
   margin-right: 4%;
   min-width: 48%;
-  padding: 15px;
   overflow-x: auto;
+  padding: 15px;
   text-align: center;
-
 }
 
 .recomemended-card:last-child {
@@ -31,6 +29,6 @@
 }
 
 .start-recipe {
+  bottom: 0;
   position: fixed;
-  bottom: 0px;
 }
