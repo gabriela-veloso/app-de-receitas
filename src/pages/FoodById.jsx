@@ -53,7 +53,6 @@ export default function FoodById({ match }) {
 
   return (
     <div className="page-container">
-      {console.log(alert)}
       <div>
         <h2 data-testid="recipe-category">{meal.strCategory}</h2>
         <h2 data-testid="recipe-title">{meal.strMeal}</h2>
@@ -95,10 +94,15 @@ export default function FoodById({ match }) {
           } }
           data-testid="share-btn"
         >
-          Compartilhar
+          <img alt="heart" src="/images/shareIcon.svg" />
         </button>
         {alert && displayAlert()}
-        <button type="button" data-testid="favorite-btn">Favoritar</button>
+        <button
+          type="button"
+          data-testid="favorite-btn"
+        >
+          <img alt="heart" src="/images/whiteHeartIcon.svg" />
+        </button>
         <div className="recommended-container">
           <RecommendedRecipes
             index={ index }
