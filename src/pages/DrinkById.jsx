@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory, useLocation } from 'react-router';
+import copy from 'clipboard-copy';
 import RecommendedRecipes from '../components/RecommendedRecipes';
 import { fetchRecommendedMeals } from '../services/comidasApi';
 
 export default function DrinkById({ match }) {
   const { drinkId: id } = match.params;
+  const history = useHistory();
+  const location = useLocation();
   const index = 0;
   const [drink, setDrink] = useState({});
   const [recommended, setRecommended] = useState([]);
+  const [alert, setAlert] = useState(false);
 
   const ingredients = Object.keys(drink)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -39,6 +44,12 @@ export default function DrinkById({ match }) {
     fetchByRecommendedMeal();
   }, [id]);
 
+  function displayAlert() {
+    const TWO = 3000;
+    setTimeout(() => setAlert(false), TWO);
+    return <span><i>Link copiado!</i></span>;
+  }
+
   return (
     <div>
       <div>
@@ -58,8 +69,25 @@ export default function DrinkById({ match }) {
             {`${ingredient} - ${measures[i]}`}
           </li>))}
         <div data-testid="instructions">{drink.strInstructions}</div>
-        <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
-        <button type="button" data-testid="share-btn">Compartilhar</button>
+        <button
+          type="button"
+          className="start-recipe"
+          data-testid="start-recipe-btn"
+          onClick={ () => { history.push(`/bebidas/${id}/in-progress`); } }
+        >
+          Iniciar Receita
+        </button>
+        <button
+          type="button"
+          onClick={ () => {
+            copy(`http://localhost:3000${location.pathname}`);
+            setAlert(true);
+          } }
+          data-testid="share-btn"
+        >
+          Compartilhar
+        </button>
+        {alert && displayAlert()}
         <button type="button" data-testid="favorite-btn">Favoritar</button>
         <RecommendedRecipes index={ index } recommended={ recommended } type="drink" />
       </div>

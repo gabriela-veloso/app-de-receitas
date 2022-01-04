@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory, useLocation } from 'react-router';
+import copy from 'clipboard-copy';
 import RecommendedRecipes from '../components/RecommendedRecipes';
 import { fetchRecommendedDrinks } from '../services/bebidasApi';
 import '../styles/recommended.css';
 
 export default function FoodById({ match }) {
   const { foodId: id } = match.params;
+  const history = useHistory();
+  const location = useLocation();
   const index = 0;
   const [meal, setMeal] = useState({});
   const [recommended, setRecommended] = useState([]);
+  const [alert, setAlert] = useState(false);
 
   const ingredients = Object.keys(meal)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -40,8 +45,15 @@ export default function FoodById({ match }) {
     fetchByRecommendedDrink();
   }, [id]);
 
+  function displayAlert() {
+    const TWO = 3000;
+    setTimeout(() => setAlert(false), TWO);
+    return <span><i>Link copiado!</i></span>;
+  }
+
   return (
     <div className="page-container">
+      {console.log(alert)}
       <div>
         <h2 data-testid="recipe-category">{meal.strCategory}</h2>
         <h2 data-testid="recipe-title">{meal.strMeal}</h2>
@@ -67,8 +79,25 @@ export default function FoodById({ match }) {
           src={ meal.strYoutube }
           data-testid="video"
         />
-        <button type="button" data-testid="start-recipe-btn">Iniciar Receita</button>
-        <button type="button" data-testid="share-btn">Compartilhar</button>
+        <button
+          type="button"
+          className="start-recipe"
+          data-testid="start-recipe-btn"
+          onClick={ () => { history.push(`/comidas/${id}/in-progress`); } }
+        >
+          Iniciar Receita
+        </button>
+        <button
+          type="button"
+          onClick={ () => {
+            copy(`http://localhost:3000${location.pathname}`);
+            setAlert(true);
+          } }
+          data-testid="share-btn"
+        >
+          Compartilhar
+        </button>
+        {alert && displayAlert()}
         <button type="button" data-testid="favorite-btn">Favoritar</button>
         <div className="recommended-container">
           <RecommendedRecipes
