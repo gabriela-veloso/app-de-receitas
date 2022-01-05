@@ -5,6 +5,39 @@ import copy from 'clipboard-copy';
 import RecommendedRecipes from '../components/RecommendedRecipes';
 import { fetchRecommendedMeals } from '../services/comidasApi';
 
+function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
+  const recipe = {
+    id,
+    type: 'bebida',
+    area: '',
+    category: drink.strCategory,
+    alcoholicOrNot: drink.strAlcoholic,
+    name: drink.strDrink,
+    image: drink.strDrinkThumb };
+  console.log(drink);
+  if (!JSON.parse(localStorage.getItem('favoriteRecipes'))
+      || JSON.parse(localStorage.getItem('favoriteRecipes')) === 0) {
+    localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
+  } else {
+    const favoriteFoods = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const alreadyFavorite = favoriteFoods.some(
+      (favoriteRecipe) => favoriteRecipe.id === id,
+    );
+    if (alreadyFavorite) {
+      const newFavorites = favoriteFoods.filter(
+        (favoriteRecipe) => favoriteRecipe.id !== id,
+      );
+      localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
+    } else {
+      favoriteFoods.push(recipe);
+      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteFoods));
+    }
+  }
+  if (favorite === true) {
+    return setFavorite(false);
+  }
+  setFavorite(true);
+}
 export default function DrinkById({ match }) {
   const { drinkId: id } = match.params;
   const history = useHistory();
@@ -13,6 +46,14 @@ export default function DrinkById({ match }) {
   const [drink, setDrink] = useState({});
   const [recommended, setRecommended] = useState([]);
   const [alert, setAlert] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
+      setFavorite(true);
+    }
+  }, [id]);
 
   const ingredients = Object.keys(drink)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -45,8 +86,8 @@ export default function DrinkById({ match }) {
   }, [id]);
 
   function displayAlert() {
-    const TWO = 3000;
-    setTimeout(() => setAlert(false), TWO);
+    const THREE = 3000;
+    setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
   }
 
@@ -77,18 +118,26 @@ export default function DrinkById({ match }) {
         >
           Iniciar Receita
         </button>
-        <button
-          type="button"
+        <input
+          type="image"
           onClick={ () => {
             copy(`http://localhost:3000${location.pathname}`);
             setAlert(true);
           } }
+          alt="share-content"
           data-testid="share-btn"
-        >
-          Compartilhar
-        </button>
+          src="/images/shareIcon.svg"
+        />
         {alert && displayAlert()}
-        <button type="button" data-testid="favorite-btn">Favoritar</button>
+        <input
+          type="image"
+          data-testid="favorite-btn"
+          onClick={ () => handleFavoriteButtonClick(id, drink, favorite, setFavorite) }
+          alt="heart"
+          src={
+            favorite ? '/images/blackHeartIcon.svg' : '/images/whiteHeartIcon.svg'
+          }
+        />
         <div className="recommended-container">
           <RecommendedRecipes index={ index } recommended={ recommended } type="drink" />
         </div>

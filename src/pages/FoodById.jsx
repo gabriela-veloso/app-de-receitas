@@ -6,6 +6,39 @@ import RecommendedRecipes from '../components/RecommendedRecipes';
 import { fetchRecommendedDrinks } from '../services/bebidasApi';
 import '../styles/recommended.css';
 
+function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
+  const recipe = {
+    id,
+    type: 'comida',
+    area: meal.strArea,
+    category: meal.strCategory,
+    alcoholicOrNot: '',
+    name: meal.strMeal,
+    image: meal.strMealThumb };
+
+  if (!JSON.parse(localStorage.getItem('favoriteRecipes'))
+    || JSON.parse(localStorage.getItem('favoriteRecipes')) === 0) {
+    localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
+  } else {
+    const favoriteFoods = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const alreadyFavorite = favoriteFoods.some(
+      (favoriteRecipe) => favoriteRecipe.id === meal.idMeal,
+    );
+    if (alreadyFavorite) {
+      const newFavorites = favoriteFoods.filter(
+        (favoriteRecipe) => favoriteRecipe.id !== meal.idMeal,
+      );
+      localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
+    } else {
+      favoriteFoods.push(recipe);
+      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteFoods));
+    }
+  }
+  if (favorite === true) {
+    return setFavorite(false);
+  }
+  setFavorite(true);
+}
 export default function FoodById({ match }) {
   const { foodId: id } = match.params;
   const history = useHistory();
@@ -14,6 +47,14 @@ export default function FoodById({ match }) {
   const [meal, setMeal] = useState({});
   const [recommended, setRecommended] = useState([]);
   const [alert, setAlert] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
+      setFavorite(true);
+    }
+  }, [id]);
 
   const ingredients = Object.keys(meal)
     .filter((ingredient) => ingredient.includes('strIngredient'))
@@ -46,8 +87,8 @@ export default function FoodById({ match }) {
   }, [id]);
 
   function displayAlert() {
-    const TWO = 3000;
-    setTimeout(() => setAlert(false), TWO);
+    const THREE = 3000;
+    setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
   }
 
@@ -86,23 +127,26 @@ export default function FoodById({ match }) {
         >
           Iniciar Receita
         </button>
-        <button
-          type="button"
+        <input
+          type="image"
           onClick={ () => {
             copy(`http://localhost:3000${location.pathname}`);
             setAlert(true);
           } }
+          alt="share-content"
           data-testid="share-btn"
-        >
-          <img alt="heart" src="/images/shareIcon.svg" />
-        </button>
+          src="/images/shareIcon.svg"
+        />
         {alert && displayAlert()}
-        <button
-          type="button"
+        <input
+          type="image"
           data-testid="favorite-btn"
-        >
-          <img alt="heart" src="/images/whiteHeartIcon.svg" />
-        </button>
+          onClick={ () => handleFavoriteButtonClick(id, meal, favorite, setFavorite) }
+          alt="heart"
+          src={
+            favorite ? '/images/blackHeartIcon.svg' : '/images/whiteHeartIcon.svg'
+          }
+        />
         <div className="recommended-container">
           <RecommendedRecipes
             index={ index }
