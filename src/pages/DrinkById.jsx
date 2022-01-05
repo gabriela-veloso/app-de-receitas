@@ -14,7 +14,7 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
     alcoholicOrNot: drink.strAlcoholic,
     name: drink.strDrink,
     image: drink.strDrinkThumb };
-  console.log(drink);
+
   if (!JSON.parse(localStorage.getItem('favoriteRecipes'))
       || JSON.parse(localStorage.getItem('favoriteRecipes')) === 0) {
     localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
@@ -103,12 +103,17 @@ export default function DrinkById({ match }) {
           src={ drink.strDrinkThumb }
         />
         {ingredients.map((ingredient, i) => (
-          <li
-            key={ `${ingredient}-${i}` }
-            data-testid={ `${i}-ingredient-name-and-measure` }
-          >
-            {`${ingredient} - ${measures[i]}`}
-          </li>))}
+          (ingredient === '' || ingredient === null)
+            ? null
+            : (
+              <li
+                key={ `${ingredient}-${i}` }
+                data-testid={ `${i}-ingredient-name-and-measure` }
+              >
+                {`${ingredient} - ${measures[i]}`}
+              </li>
+            )
+        ))}
         <div data-testid="instructions">{drink.strInstructions}</div>
         <button
           type="button"
