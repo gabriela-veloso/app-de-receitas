@@ -82,12 +82,12 @@ export default function DrinkByIdInProgress({ match }) {
   }
 
   function checkIngredient({ target }) {
-    console.log(target.parentNode);
-    // if (target.checked) {
-    //   target.style.textDecoration = 'line-through';
-    // } else {
-    //   target.style.textDecoration = 'none';
-    // }
+    console.log(target);
+    if (target.checked) {
+      target.parentNode.style = 'text-decoration: line-through';
+    } else {
+      target.parentNode.style = 'text-decoration: none';
+    }
   }
 
   return (
@@ -109,9 +109,9 @@ export default function DrinkByIdInProgress({ match }) {
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
                     htmlFor={ ingredient }
-                    onClick={ (event) => checkIngredient(event) }
                   >
                     <input
+                      onClick={ (event) => checkIngredient(event) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
