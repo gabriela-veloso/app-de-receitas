@@ -37,6 +37,16 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
   }
   setFavorite(true);
 }
+
+function checkIngredient({ target }) {
+  console.log(target);
+  if (target.checked) {
+    target.parentNode.style = 'text-decoration: line-through';
+  } else {
+    target.parentNode.style = 'text-decoration: none';
+  }
+}
+
 export default function DrinkByIdInProgress({ match }) {
   const { drinkId: id } = match.params;
   const location = useLocation();
@@ -79,15 +89,6 @@ export default function DrinkByIdInProgress({ match }) {
     const THREE = 3000;
     setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
-  }
-
-  function checkIngredient({ target }) {
-    console.log(target);
-    if (target.checked) {
-      target.parentNode.style = 'text-decoration: line-through';
-    } else {
-      target.parentNode.style = 'text-decoration: none';
-    }
   }
 
   return (
