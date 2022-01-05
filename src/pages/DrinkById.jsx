@@ -51,7 +51,7 @@ export default function DrinkById({ match }) {
   }
 
   return (
-    <div>
+    <div className="page-container">
       <div>
         <h2 data-testid="recipe-category">{drink.strCategory}</h2>
         <h2 data-testid="recipe-category">{drink.strAlcoholic}</h2>
@@ -89,7 +89,9 @@ export default function DrinkById({ match }) {
         </button>
         {alert && displayAlert()}
         <button type="button" data-testid="favorite-btn">Favoritar</button>
-        <RecommendedRecipes index={ index } recommended={ recommended } type="drink" />
+        <div className="recommended-container">
+          <RecommendedRecipes index={ index } recommended={ recommended } type="drink" />
+        </div>
       </div>
     </div>
   );
