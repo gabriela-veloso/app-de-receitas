@@ -43,7 +43,6 @@ export default function DrinkByIdInProgress({ match }) {
   const [drink, setDrink] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  console.log(drink);
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -82,6 +81,15 @@ export default function DrinkByIdInProgress({ match }) {
     return <span><i>Link copiado!</i></span>;
   }
 
+  function checkIngredient({ target }) {
+    console.log(target.parentNode);
+    // if (target.checked) {
+    //   target.style.textDecoration = 'line-through';
+    // } else {
+    //   target.style.textDecoration = 'none';
+    // }
+  }
+
   return (
     <div className="page-container">
       <div>
@@ -93,18 +101,32 @@ export default function DrinkByIdInProgress({ match }) {
           src={ drink.strDrinkThumb }
           width="200"
         />
-        {ingredients.map((ingredient, i) => (
-          (ingredient === '' || ingredient === null)
-            ? null
-            : (
-              <li
-                key={ `${ingredient}-${i}` }
-                data-testid={ `${i}-ingredient-step` }
-              >
-                {`${ingredient} - ${measures[i]}`}
-              </li>
-            )
-        ))}
+        <div className="ingredient-list">
+          {ingredients.map((ingredient, i) => (
+            (ingredient === '' || ingredient === null)
+              ? null
+              : (
+                <div className="ingredient-container" key={ `${ingredient}-${i}` }>
+                  <label
+                    htmlFor={ ingredient }
+                    onClick={ (event) => checkIngredient(event) }
+                  >
+                    <input
+                      id={ ingredient }
+                      type="checkbox"
+                      className="ingredient-step"
+                      data-testid={ `${i}-ingredient-step` }
+                    />
+                    {
+                      (measures[i] === '' || !measures[i])
+                        ? ingredient
+                        : `${ingredient} - ${measures[i]}`
+                    }
+                  </label>
+                </div>
+              )
+          ))}
+        </div>
         <div data-testid="instructions">{drink.strInstructions}</div>
         <input
           type="image"

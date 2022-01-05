@@ -2,15 +2,15 @@ import React from 'react';
 import Header from '../components/Header';
 
 export default function FavoriteRecipes() {
-  const fetchById = async (id) => {
-    try {
-      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-      const json = await res.json();
-      return (json);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
+  // const fetchById = async (id) => {
+  //   try {
+  //     const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+  //     const json = await res.json();
+  //     return (json);
+  //   } catch (error) {
+  //     console.log('error', error);
+  //   }
+  // };
 
   function recipesMap() {
     const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
