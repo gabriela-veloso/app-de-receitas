@@ -25,7 +25,7 @@ export default function RecommendedRecipes({ recommended, type }) {
           <div key={ rec.strMeal } data-testid={ `${i}-recomendation-card` }>
             <h2>{rec.strCategory}</h2>
             <h2 data-testid={ `${i}-recomendation-title` }>{rec.strMeal}</h2>
-            <img src={ rec.strMealThumb } alt={ rec.strMeal } />
+            <img src={ rec.strMealThumb } width="200" alt={ rec.strMeal } />
           </div>))
       }
     </div>
