@@ -110,13 +110,13 @@ export default function DrinkByIdInProgress({ match }) {
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
                     htmlFor={ ingredient }
+                    data-testid={ `${i}-ingredient-step` }
                   >
                     <input
                       onClick={ (event) => checkIngredient(event) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
-                      data-testid={ `${i}-ingredient-step` }
                     />
                     {
                       (measures[i] === '' || !measures[i])
@@ -132,7 +132,7 @@ export default function DrinkByIdInProgress({ match }) {
         <input
           type="image"
           onClick={ () => {
-            copy(`http://localhost:3000${location.pathname}`);
+            copy(`http://localhost:3000/bebidas/${id}`);
             setAlert(true);
           } }
           alt="share-content"
