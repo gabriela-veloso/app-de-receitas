@@ -15,6 +15,7 @@ function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
     alcoholicOrNot: '',
     name: meal.strMeal,
     image: meal.strMealThumb };
+  console.log(recipe);
 
   if (!JSON.parse(localStorage.getItem('favoriteRecipes'))
     || JSON.parse(localStorage.getItem('favoriteRecipes')) === 0) {
@@ -104,12 +105,17 @@ export default function FoodById({ match }) {
           width="200"
         />
         {ingredients.map((ingredient, i) => (
-          <li
-            key={ `${ingredient}-${i}` }
-            data-testid={ `${i}-ingredient-name-and-measure` }
-          >
-            {`${ingredient} - ${measures[i]}`}
-          </li>))}
+          (ingredient === '' || ingredient === null)
+            ? null
+            : (
+              <li
+                key={ `${ingredient}-${i}` }
+                data-testid={ `${i}-ingredient-name-and-measure` }
+              >
+                {`${ingredient} - ${measures[i]}`}
+              </li>
+            )
+        ))}
         <div data-testid="instructions">{meal.strInstructions}</div>
         <h3>Vídeo</h3>
         <iframe
