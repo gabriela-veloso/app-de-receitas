@@ -20,6 +20,7 @@ import FoodById from './pages/FoodById';
 import FoodByIdInProgress from './pages/FoodByIdInProgress';
 import DrinkByIdInProgress from './pages/DrinkByIdInProgress';
 import FoodByArea from './pages/ExploreFoodByArea';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
           <Route path="/explorar/comidas/area" component={ FoodByArea } />
           <Route path="/receitas-feitas" component={ RecipesDone } />
           <Route path="/receitas-favoritas" component={ FavoriteRecipes } />
+          <Route path="*" component={ NotFound } />
         </Switch>
       </BrowserRouter>
 
