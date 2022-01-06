@@ -16,16 +16,9 @@ export default function FavoriteRecipes() {
 
   function recipesMap() {
     const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    arrayFavoriteRecipes.map((recipe, index) => {
-      fetchById(recipe.id);
-      const ingredients = Object.keys(meal)
-        .filter((ingredient) => ingredient.includes('strIngredient'))
-        .map((ingredient) => meal[ingredient]);
-      // const liMap = meal.map((meal, index).map(ingredients) => {
-      //   // ingredient === '' || ingredient === null)
-      //   // ? null : 
-      //   // <li data-testid={ `${index}-ingredient-step` }>{meal.ingredient}</li>
-      // });
+    return arrayFavoriteRecipes.map(async (recipe) => {
+      const apiResponse = await fetchById(recipe.id);
+      console.log(apiResponse);
       return (
         <div key={ recipe.id }>
           <img
@@ -43,7 +36,7 @@ export default function FavoriteRecipes() {
           <input
             data-testid="favorite-btn"
             type="image"
-            src="/images/shareIcon.svg"
+            src="/images/blackHeartIcon.svg"
             alt="favorite-icon"
           />
           <p data-testid="recipe-category">{ recipe.category }</p>
@@ -70,3 +63,8 @@ export default function FavoriteRecipes() {
     </div>
   );
 }
+
+// O texto da categoria deve possuir o atributo data-testid="recipe-category";
+// Os ingredientes devem possuir o atributo data-testid=${index}-ingredient-step, a verificação será feita pelo length do atributo.
+// O elemento de instruções deve possuir o atributo data-testid="instructions";
+// O botão para finalizar a receita deve possuir o atributo data-testid="finish-recipe-btn".

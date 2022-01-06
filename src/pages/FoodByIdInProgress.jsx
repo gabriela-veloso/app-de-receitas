@@ -43,6 +43,10 @@ function validateButton(setIsDisable) {
   setIsDisable(!check);
 }
 
+function saveProcess() {
+
+}
+
 function checkIngredient({ target }, setIsDisable) {
   if (target.checked) {
     target.parentNode.style = 'text-decoration: line-through';
@@ -50,6 +54,7 @@ function checkIngredient({ target }, setIsDisable) {
     target.parentNode.style = 'text-decoration: none';
   }
   validateButton(setIsDisable);
+  saveProcess();
 }
 
 export default function FoodByIdInProgress({ match }) {
