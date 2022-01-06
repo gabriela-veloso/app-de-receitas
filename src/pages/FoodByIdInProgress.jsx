@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
 
@@ -37,13 +36,20 @@ function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
   }
   setFavorite(true);
 }
+
+function checkIngredient({ target }) {
+  if (target.checked) {
+    target.parentNode.style = 'text-decoration: line-through';
+  } else {
+    target.parentNode.style = 'text-decoration: none';
+  }
+}
+
 export default function FoodByIdInProgress({ match }) {
   const { foodId: id } = match.params;
-  const location = useLocation();
   const [meal, setMeal] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  console.log(meal);
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -93,23 +99,37 @@ export default function FoodByIdInProgress({ match }) {
           src={ meal.strMealThumb }
           width="200"
         />
-        {ingredients.map((ingredient, i) => (
-          (ingredient === '' || ingredient === null)
-            ? null
-            : (
-              <li
-                key={ `${ingredient}-${i}` }
-                data-testid={ `${i}-ingredient-step` }
-              >
-                {`${ingredient} - ${measures[i]}`}
-              </li>
-            )
-        ))}
+        <div className="ingredient-list">
+          {ingredients.map((ingredient, i) => (
+            (ingredient === '' || ingredient === null)
+              ? null
+              : (
+                <div className="ingredient-container" key={ `${ingredient}-${i}` }>
+                  <label
+                    htmlFor={ ingredient }
+                    data-testid={ `${i}-ingredient-step` }
+                  >
+                    <input
+                      onClick={ (event) => checkIngredient(event) }
+                      id={ ingredient }
+                      type="checkbox"
+                      className="ingredient-step"
+                    />
+                    {
+                      (measures[i] === '' || !measures[i])
+                        ? ingredient
+                        : `${ingredient} - ${measures[i]}`
+                    }
+                  </label>
+                </div>
+              )
+          ))}
+        </div>
         <div data-testid="instructions">{meal.strInstructions}</div>
         <input
           type="image"
           onClick={ () => {
-            copy(`http://localhost:3000${location.pathname}`);
+            copy(`http://localhost:3000/comidas/${id}`);
             setAlert(true);
           } }
           alt="share-content"

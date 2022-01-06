@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
 
@@ -49,7 +48,6 @@ function checkIngredient({ target }) {
 
 export default function DrinkByIdInProgress({ match }) {
   const { drinkId: id } = match.params;
-  const location = useLocation();
   const [drink, setDrink] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
