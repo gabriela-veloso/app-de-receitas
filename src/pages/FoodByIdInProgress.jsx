@@ -43,18 +43,53 @@ function validateButton(setIsDisable) {
   setIsDisable(!check);
 }
 
-function saveProcess() {
+function saveProcess(ingredientId, recipeId) {
+  const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
 
+  if (!inProgressRecipes) {
+    const newProgressRecipes = {
+      meals: {
+        [recipeId]: [ingredientId],
+      },
+    };
+
+    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
+  } else if (!inProgressRecipes.meals) {
+    const newProgressRecipes = {
+      ...inProgressRecipes,
+      meals: {
+        [recipeId]: [ingredientId],
+      },
+    };
+
+    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
+  } else if (!inProgressRecipes.meals[recipeId]) {
+    const newProgressRecipes = {
+      ...inProgressRecipes,
+      meals: {
+        ...inProgressRecipes.meals,
+        [recipeId]: [ingredientId],
+      },
+    };
+
+    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
+  } else { // aqui <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    const recipeIngredients = inProgressRecipes.meals[recipeId];
+    console.log(recipeIngredients);
+    const checkIngredients = recipeIngredients
+      .some((ingredient) => ingredient === ingredientId);
+    console.log(checkIngredients);
+  }
 }
 
-function checkIngredient({ target }, setIsDisable) {
+function checkIngredient({ target }, setIsDisable, index, id) {
   if (target.checked) {
     target.parentNode.style = 'text-decoration: line-through';
   } else {
     target.parentNode.style = 'text-decoration: none';
   }
   validateButton(setIsDisable);
-  saveProcess();
+  saveProcess(index, id);
 }
 
 export default function FoodByIdInProgress({ match }) {
@@ -123,7 +158,7 @@ export default function FoodByIdInProgress({ match }) {
                     data-testid={ `${i}-ingredient-step` }
                   >
                     <input
-                      onClick={ (event) => checkIngredient(event, setIsDisable) }
+                      onClick={ (event) => checkIngredient(event, setIsDisable, i, id) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
