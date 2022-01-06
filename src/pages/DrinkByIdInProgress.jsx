@@ -38,7 +38,6 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
 }
 
 function checkIngredient({ target }) {
-  console.log(target);
   if (target.checked) {
     target.parentNode.style = 'text-decoration: line-through';
   } else {
