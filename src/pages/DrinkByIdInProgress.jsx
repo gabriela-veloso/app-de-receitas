@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
 
@@ -37,9 +36,17 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
   }
   setFavorite(true);
 }
+
+function checkIngredient({ target }) {
+  if (target.checked) {
+    target.parentNode.style = 'text-decoration: line-through';
+  } else {
+    target.parentNode.style = 'text-decoration: none';
+  }
+}
+
 export default function DrinkByIdInProgress({ match }) {
   const { drinkId: id } = match.params;
-  const location = useLocation();
   const [drink, setDrink] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
@@ -81,15 +88,6 @@ export default function DrinkByIdInProgress({ match }) {
     return <span><i>Link copiado!</i></span>;
   }
 
-  function checkIngredient({ target }) {
-    console.log(target.parentNode);
-    // if (target.checked) {
-    //   target.style.textDecoration = 'line-through';
-    // } else {
-    //   target.style.textDecoration = 'none';
-    // }
-  }
-
   return (
     <div className="page-container">
       <div>
@@ -109,13 +107,13 @@ export default function DrinkByIdInProgress({ match }) {
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
                     htmlFor={ ingredient }
-                    onClick={ (event) => checkIngredient(event) }
+                    data-testid={ `${i}-ingredient-step` }
                   >
                     <input
+                      onClick={ (event) => checkIngredient(event) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
-                      data-testid={ `${i}-ingredient-step` }
                     />
                     {
                       (measures[i] === '' || !measures[i])
@@ -131,7 +129,7 @@ export default function DrinkByIdInProgress({ match }) {
         <input
           type="image"
           onClick={ () => {
-            copy(`http://localhost:3000${location.pathname}`);
+            copy(`http://localhost:3000/bebidas/${id}`);
             setAlert(true);
           } }
           alt="share-content"
