@@ -37,12 +37,19 @@ function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
   setFavorite(true);
 }
 
-function checkIngredient({ target }) {
+function validateButton(setIsDisable) {
+  const checkboxInputs = Array.from(document.querySelectorAll('.ingredient-step'));
+  const check = checkboxInputs.every((input) => input.checked === true);
+  setIsDisable(!check);
+}
+
+function checkIngredient({ target }, setIsDisable) {
   if (target.checked) {
     target.parentNode.style = 'text-decoration: line-through';
   } else {
     target.parentNode.style = 'text-decoration: none';
   }
+  validateButton(setIsDisable);
 }
 
 export default function FoodByIdInProgress({ match }) {
@@ -50,6 +57,7 @@ export default function FoodByIdInProgress({ match }) {
   const [meal, setMeal] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
+  const [isDisable, setIsDisable] = useState(true);
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -110,7 +118,7 @@ export default function FoodByIdInProgress({ match }) {
                     data-testid={ `${i}-ingredient-step` }
                   >
                     <input
-                      onClick={ (event) => checkIngredient(event) }
+                      onClick={ (event) => checkIngredient(event, setIsDisable) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
@@ -146,7 +154,13 @@ export default function FoodByIdInProgress({ match }) {
             favorite ? '/images/blackHeartIcon.svg' : '/images/whiteHeartIcon.svg'
           }
         />
-        <button type="button" data-testid="finish-recipe-btn">Finalizar Receita</button>
+        <button
+          type="button"
+          data-testid="finish-recipe-btn"
+          disabled={ isDisable }
+        >
+          Finalizar Receita
+        </button>
       </div>
     </div>
   );
