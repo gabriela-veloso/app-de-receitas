@@ -6,24 +6,28 @@ export default function FavoriteRecipes() {
   const [isMealsFull, setisMealsFull] = useState(false);
   const recipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
   const recipesId = recipes.map((recipe) => recipe.id);
+
   useEffect(() => {
+    const recipesFav = [];
     const fetchById = async (id) => {
       try {
-        console.log(isMealsFull);
         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
         const json = await res.json();
         const mealRecipe = json.meals[0];
-        setMeals([...meals, mealRecipe]);
+        recipesFav.push(mealRecipe);
       } catch (error) {
         console.log('error', error);
       }
     };
+
+    console.log(recipesFav.length);
+    setMeals(recipesFav);
     recipesId.forEach((id) => fetchById(id));
     setisMealsFull(true);
-  }, []);
-
+  }, [recipesId]);
   function ingredientsListMap() {
-    console.log(meals[0]);
+    console.log(meals.length);
+    // meals.map((meal) => console.log(meal));
     return meals.map((recipe) => (
       <div key={ recipe.idMeal }>{ recipe.strIngredient1 }</div>
     ));
