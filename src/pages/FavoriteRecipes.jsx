@@ -3,66 +3,68 @@ import Header from '../components/Header';
 
 export default function FavoriteRecipes() {
   const [meals, setMeals] = useState([]);
+  const [isMealsFull, setisMealsFull] = useState(false);
   const recipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
   const recipesId = recipes.map((recipe) => recipe.id);
   useEffect(() => {
-    const arrayRecipes = [];
     const fetchById = async (id) => {
       try {
+        console.log(isMealsFull);
         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
         const json = await res.json();
         const mealRecipe = json.meals[0];
-        arrayRecipes.push(mealRecipe);
+        setMeals([...meals, mealRecipe]);
       } catch (error) {
         console.log('error', error);
       }
     };
     recipesId.forEach((id) => fetchById(id));
-    setMeals(arrayRecipes);
-  }, [recipes.id]);
+    setisMealsFull(true);
+  }, []);
 
-  // O texto da categoria deve possuir o atributo data-testid="recipe-category";
-  // Os ingredientes devem possuir o atributo data-testid=${index}-ingredient-step, a verificação será feita pelo length do atributo.
-  // O elemento de instruções deve possuir o atributo data-testid="instructions";
-  // O botão para finalizar a receita deve possuir o atributo data-testid="finish-recipe-btn".
-
-  console.log([{a: "b"}, {}, {}]);
   function ingredientsListMap() {
-    return (<div>teste</div>);
+    console.log(meals[0]);
+    return meals.map((recipe) => (
+      <div key={ recipe.idMeal }>{ recipe.strIngredient1 }</div>
+    ));
   }
 
   function recipesMap() {
     const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    return arrayFavoriteRecipes.map((recipe) => (
-      <div key={ recipe.id }>
-        <img
-          data-testid="recipe-photo"
-          src={ recipe.image }
-          alt={ recipe.name }
-        />
-        <h4 data-testid="recipe-title">{ recipe.name }</h4>
-        <input
-          data-testid="share-btn"
-          type="image"
-          src="/images/shareIcon.svg"
-          alt="share-icon"
-        />
-        <input
-          data-testid="favorite-btn"
-          type="image"
-          src="/images/blackHeartIcon.svg"
-          alt="favorite-icon"
-        />
-        <p data-testid="recipe-category">{ recipe.category }</p>
-        { (meals.length > 0) && ingredientsListMap() }
-        <button
-          type="submit"
-          data-testid="finish-recipe-btn"
-        >
-          Finalizar Receita
-        </button>
-      </div>
-    ));
+    if (!isMealsFull) {
+      return null;
+    }
+    return (
+      arrayFavoriteRecipes.map((recipe) => (
+        <div key={ recipe.id }>
+          <img
+            data-testid="recipe-photo"
+            src={ recipe.image }
+            alt={ recipe.name }
+          />
+          <h4 data-testid="recipe-title">{ recipe.name }</h4>
+          <input
+            data-testid="share-btn"
+            type="image"
+            src="/images/shareIcon.svg"
+            alt="share-icon"
+          />
+          <input
+            data-testid="favorite-btn"
+            type="image"
+            src="/images/blackHeartIcon.svg"
+            alt="favorite-icon"
+          />
+          <p data-testid="recipe-category">{ recipe.category }</p>
+          { ingredientsListMap() }
+          <button
+            type="submit"
+            data-testid="finish-recipe-btn"
+          >
+            Finalizar Receita
+          </button>
+        </div>
+      )));
   }
 
   return (
