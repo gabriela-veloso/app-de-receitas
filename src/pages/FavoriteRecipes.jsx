@@ -5,31 +5,53 @@ export default function FavoriteRecipes() {
   const [meals, setMeals] = useState([]);
   const [isMealsFull, setisMealsFull] = useState(false);
   const recipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-  const recipesId = recipes.map((recipe) => recipe.id);
+  // const recipesId = recipes.map((recipe) => recipe.id);
 
-  useEffect(() => {
-    const recipesFav = [];
-    const fetchById = async (id) => {
-      try {
-        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-        const json = await res.json();
-        const mealRecipe = json.meals[0];
-        recipesFav.push(mealRecipe);
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchById = async () => {
+  //     try {
+  //       const recipesFav = recipesId.map(async (id) => {
+  //         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+  //         const json = await res.json();
+  //         const mealRecipe = json.meals[0];
+  //         return mealRecipe;
+  //       });
+  //       Promise.all(recipesFav).then((values) => {
+  //         setMeals(values);
+  //       });
+  //       console.log(recipesFav);
+  //       setMeals([...recipesFav]);
+  //       setisMealsFull(true);
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
+  //   fetchById();
 
+    // recipesId.forEach((id) => fetchById(id));
+    // console.log(recipesFav);
+    // console.log(recipesFav.length);
+    // setMeals(recipesFav);
+  // }, []);
+
+<<<<<<< HEAD
     console.log(recipesFav.length);
     setMeals(recipesFav);
     recipesId.forEach((id) => fetchById(id));
     setisMealsFull(true);
   }, []);
+=======
+>>>>>>> aca3cbb1e9571a10cca74f414de33d5734170afd
   function ingredientsListMap() {
+    console.log(meals);
     console.log(meals.length);
     // meals.map((meal) => console.log(meal));
+
     return meals.map((recipe) => (
-      <div key={ recipe.idMeal }>{ recipe.strIngredient1 }</div>
+      <div>
+        <div key={ recipe.idMeal }>{ recipe.strIngredient1 }</div>
+        <div key={ recipe.idMeal }>{ recipe.strIngredient2 }</div>
+      </div>
     ));
   }
 

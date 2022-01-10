@@ -75,10 +75,8 @@ function saveProcess(ingredientId, recipeId) {
     localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
   } else { // aqui <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     const recipeIngredients = inProgressRecipes.meals[recipeId];
-    console.log(recipeIngredients);
     const checkIngredients = recipeIngredients
       .some((ingredient) => ingredient === ingredientId);
-    console.log(checkIngredients);
   }
 }
 
