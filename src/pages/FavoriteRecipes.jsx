@@ -1,96 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Header from '../components/Header';
 
 export default function FavoriteRecipes() {
-  const [meals, setMeals] = useState([]);
-  const [isMealsFull, setisMealsFull] = useState(false);
-  const recipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-  // const recipesId = recipes.map((recipe) => recipe.id);
-
-  // useEffect(() => {
-  //   const fetchById = async () => {
-  //     try {
-  //       const recipesFav = recipesId.map(async (id) => {
-  //         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-  //         const json = await res.json();
-  //         const mealRecipe = json.meals[0];
-  //         return mealRecipe;
-  //       });
-  //       Promise.all(recipesFav).then((values) => {
-  //         setMeals(values);
-  //       });
-  //       console.log(recipesFav);
-  //       setMeals([...recipesFav]);
-  //       setisMealsFull(true);
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   };
-  //   fetchById();
-
-    // recipesId.forEach((id) => fetchById(id));
-    // console.log(recipesFav);
-    // console.log(recipesFav.length);
-    // setMeals(recipesFav);
-  // }, []);
-
-<<<<<<< HEAD
-    console.log(recipesFav.length);
-    setMeals(recipesFav);
-    recipesId.forEach((id) => fetchById(id));
-    setisMealsFull(true);
-  }, []);
-=======
->>>>>>> aca3cbb1e9571a10cca74f414de33d5734170afd
-  function ingredientsListMap() {
-    console.log(meals);
-    console.log(meals.length);
-    // meals.map((meal) => console.log(meal));
-
-    return meals.map((recipe) => (
-      <div>
-        <div key={ recipe.idMeal }>{ recipe.strIngredient1 }</div>
-        <div key={ recipe.idMeal }>{ recipe.strIngredient2 }</div>
+  function renderFavMeals(recipe, index) {
+    return (
+      <div key={ recipe.id }>
+        <img
+          data-testid={ `${index}-horizontal-image` }
+          src={ recipe.image }
+          alt={ recipe.name }
+        />
+        <h4 data-testid={ `${index}-horizontal-name` }>{ recipe.name }</h4>
+        <input
+          data-testid={ `${index}-horizontal-share-btn` }
+          type="image"
+          src="/images/shareIcon.svg"
+          alt="share-icon"
+        />
+        <input
+          data-testid={ `${index}-horizontal-favorite-btn` }
+          type="image"
+          src="/images/blackHeartIcon.svg"
+          alt="favorite-icon"
+        />
+        <p
+          data-testid={ `${index}-horizontal-top-text` }
+        >
+          { `${recipe.area} - ${recipe.category}` }
+        </p>
       </div>
-    ));
+    );
   }
 
-  function recipesMap() {
-    const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (!isMealsFull) {
-      return null;
-    }
+  function renderFavDrinks(recipe, index) {
     return (
-      arrayFavoriteRecipes.map((recipe) => (
-        <div key={ recipe.id }>
-          <img
-            data-testid="recipe-photo"
-            src={ recipe.image }
-            alt={ recipe.name }
-          />
-          <h4 data-testid="recipe-title">{ recipe.name }</h4>
-          <input
-            data-testid="share-btn"
-            type="image"
-            src="/images/shareIcon.svg"
-            alt="share-icon"
-          />
-          <input
-            data-testid="favorite-btn"
-            type="image"
-            src="/images/blackHeartIcon.svg"
-            alt="favorite-icon"
-          />
-          <p data-testid="recipe-category">{ recipe.category }</p>
-          { ingredientsListMap() }
-          <button
-            type="submit"
-            data-testid="finish-recipe-btn"
-          >
-            Finalizar Receita
-          </button>
-        </div>
-      )));
+      <div key={ recipe.id }>
+        <img
+          data-testid={ `${index}-horizontal-image` }
+          src={ recipe.image }
+          alt={ recipe.name }
+        />
+        <p data-testid={ `${index}-horizontal-top-text` }>{ recipe.alcoholicOrNot }</p>
+        <h4 data-testid={ `${index}-horizontal-name` }>{ recipe.name }</h4>
+        <input
+          data-testid={ `${index}-horizontal-share-btn` }
+          type="image"
+          src="/images/shareIcon.svg"
+          alt="share-icon"
+        />
+        <input
+          data-testid={ `${index}-horizontal-favorite-btn` }
+          type="image"
+          src="/images/blackHeartIcon.svg"
+          alt="favorite-icon"
+        />
+      </div>
+    );
+  }
+
+  function renderFavoriteRecipes() {
+    const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    return (
+      <div>
+        <button type="button" data-testid="filter-by-all-btn">All</button>
+        <button type="button" data-testid="filter-by-food-btn">Food</button>
+        <button type="button" data-testid="filter-by-drink-btn">Drinks</button>
+        {arrayFavoriteRecipes.map((recipe, index) => {
+          if (recipe.type === 'comida') { return renderFavMeals(recipe, index); }
+          return renderFavDrinks(recipe, index);
+        })}
+      </div>
+    );
   }
 
   return (
@@ -99,8 +79,10 @@ export default function FavoriteRecipes() {
       <div>
         { (!JSON.parse(localStorage.getItem('favoriteRecipes'))
         || JSON.parse(localStorage.getItem('favoriteRecipes')).length === 0)
-          ? global.alert('Você não favoritou nenhuma receita') : recipesMap() }
+          ? global.alert('Você não favoritou nenhuma receita') : renderFavoriteRecipes() }
       </div>
     </div>
   );
 }
+
+// data-testid="filter-by-all-btn"

@@ -43,27 +43,28 @@ function validateButton(setIsDisable) {
   setIsDisable(!check);
 }
 
+function setInProgressRecipesLocalStorage(array) {
+  localStorage.setItem('inProgressRecipes', JSON.stringify(array));
+}
+
 function saveProcess(ingredientId, recipeId) {
   const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-
-  if (!inProgressRecipes) {
+  if (!inProgressRecipes) { // localStorage vazio - funciona
     const newProgressRecipes = {
       meals: {
         [recipeId]: [ingredientId],
       },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else if (!inProgressRecipes.meals) {
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.meals) { // localStorage apenas com bebidas - 
     const newProgressRecipes = {
       ...inProgressRecipes,
       meals: {
         [recipeId]: [ingredientId],
       },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else if (!inProgressRecipes.meals[recipeId]) {
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.meals[recipeId]) { // localStorage sem essa receita - funciona
     const newProgressRecipes = {
       ...inProgressRecipes,
       meals: {
@@ -71,12 +72,30 @@ function saveProcess(ingredientId, recipeId) {
         [recipeId]: [ingredientId],
       },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else { // aqui <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else { // o id já está salvo
     const recipeIngredients = inProgressRecipes.meals[recipeId];
-    const checkIngredients = recipeIngredients
-      .some((ingredient) => ingredient === ingredientId);
+    const isIngredientDone = recipeIngredients
+      .some((ingredientNumber) => parseInt(ingredientNumber, 10) === ingredientId);
+    if (isIngredientDone) { // ingrediente já está salvo
+      const arrayIds = recipeIngredients
+        .filter((ingredientNumber) => parseInt(ingredientNumber, 10) !== ingredientId);
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        meals: { ...inProgressRecipes.meals, [recipeId]: [...arrayIds] },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    } else { // ingrediente não está salvo
+      const arrayIds = [...recipeIngredients, ingredientId];
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        meals: {
+          ...inProgressRecipes.meals,
+          [recipeId]: [...arrayIds],
+        },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    }
   }
 }
 
@@ -96,12 +115,17 @@ export default function FoodByIdInProgress({ match }) {
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(true);
+  const [ingredientsInlocalStorage,
+    setIngredientsInLocalStorage] = useState([]);
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
     if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
       setFavorite(true);
     }
+    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const savedIngredients = inProgressRecipes ? inProgressRecipes.meals[id] : [];
+    setIngredientsInLocalStorage(savedIngredients);
   }, [id]);
 
   const ingredients = Object.keys(meal)
@@ -152,8 +176,12 @@ export default function FoodByIdInProgress({ match }) {
               : (
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
-                    htmlFor={ ingredient }
                     data-testid={ `${i}-ingredient-step` }
+                    htmlFor={ ingredient }
+                    style={ ingredientsInlocalStorage
+                      .some((ingredientId) => ingredientId === i)
+                      ? 'text-decoration: line-through'
+                      : 'text-decoration: none' }
                   >
                     <input
                       onClick={ (event) => checkIngredient(event, setIsDisable, i, id) }
