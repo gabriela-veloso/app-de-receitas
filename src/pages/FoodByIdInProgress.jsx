@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
+import setInProgressRecipesLocalStorage from '../helpers/helpers';
 
 function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
   const recipe = {
@@ -41,10 +43,6 @@ function validateButton(setIsDisable) {
   const checkboxInputs = Array.from(document.querySelectorAll('.ingredient-step'));
   const check = checkboxInputs.every((input) => input.checked === true);
   setIsDisable(!check);
-}
-
-function setInProgressRecipesLocalStorage(array) {
-  localStorage.setItem('inProgressRecipes', JSON.stringify(array));
 }
 
 function saveProcess(ingredientId, recipeId) {
@@ -125,6 +123,7 @@ export default function FoodByIdInProgress({ match }) {
   const [isDisable, setIsDisable] = useState(true);
   const [ingredientsSaved,
     setIngredientsSaved] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     getFavorites(setIngredientsSaved, setFavorite, id);
@@ -203,8 +202,7 @@ export default function FoodByIdInProgress({ match }) {
                     }
                   </label>
                 </div>
-              )
-          ))}
+              )))}
         </div>
         <div data-testid="instructions">{meal.strInstructions}</div>
         <input
@@ -231,6 +229,7 @@ export default function FoodByIdInProgress({ match }) {
           type="button"
           data-testid="finish-recipe-btn"
           disabled={ isDisable }
+          onClick={ () => history.push('/receitas-feitas') }
         >
           Finalizar Receita
         </button>

@@ -71,9 +71,6 @@ export default function FavoriteRecipes() {
           type="image"
           src="/images/blackHeartIcon.svg"
           alt="favorite-icon"
-          // onClick={() => {
-
-          // }}
         />
       </div>
     );
@@ -106,4 +103,14 @@ export default function FavoriteRecipes() {
   );
 }
 
-// data-testid="filter-by-all-btn"
+// var oldItems = JSON.parse(localStorage.getItem('itemsArray')) || [];
+
+// var newItem = { cocktails: ""};
+
+//  oldItems.push(newItem);
+
+//  localStorage.setItem('itemsArray', JSON.stringify(oldItems));
+
+// var cocktails = {id: {1, 2, 3}}
+// cocktails.senha = {1, 2, 3}
+// console.log(cocktails);

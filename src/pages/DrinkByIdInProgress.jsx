@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
+import setInProgressRecipesLocalStorage from '../helpers/helpers';
 
 function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
   const recipe = {
@@ -12,23 +14,22 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
     alcoholicOrNot: drink.strAlcoholic,
     name: drink.strDrink,
     image: drink.strDrinkThumb };
-
   if (!JSON.parse(localStorage.getItem('favoriteRecipes'))
     || JSON.parse(localStorage.getItem('favoriteRecipes')) === 0) {
     localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
   } else {
-    const favoriteFoods = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    const alreadyFavorite = favoriteFoods.some(
-      (favoriteRecipe) => favoriteRecipe.id === id,
+    const favoriteDrink = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const alreadyFavorite = favoriteDrink.some(
+      (favoriteRecipe) => favoriteRecipe.id === drink.idDrink,
     );
     if (alreadyFavorite) {
-      const newFavorites = favoriteFoods.filter(
-        (favoriteRecipe) => favoriteRecipe.id !== id,
+      const newFavorites = favoriteDrink.filter(
+        (favoriteRecipe) => favoriteRecipe.id !== drink.idDrink,
       );
       localStorage.setItem('favoriteRecipes', JSON.stringify(newFavorites));
     } else {
-      favoriteFoods.push(recipe);
-      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteFoods));
+      favoriteDrink.push(recipe);
+      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteDrink));
     }
   }
   if (favorite === true) {
@@ -37,11 +38,80 @@ function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
   setFavorite(true);
 }
 
-function checkIngredient({ target }) {
+function validateButton(setIsDisable) {
+  const checkboxInputs = Array.from(document.querySelectorAll('.ingredient-step'));
+  const check = checkboxInputs.every((input) => input.checked === true);
+  setIsDisable(!check);
+}
+
+function saveProcess(ingredientId, recipeId) {
+  const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  if (!inProgressRecipes) { // localStorage vazio - funciona
+    const newProgressRecipes = {
+      cocktails: { [recipeId]: [ingredientId] },
+    };
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.cocktails) { // localStorage apenas com bebidas -
+    const newProgressRecipes = {
+      ...inProgressRecipes,
+      cocktails: { [recipeId]: [ingredientId] },
+    };
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.cocktails[recipeId]) { // localStorage sem essa receita - funciona
+    const newProgressRecipes = {
+      ...inProgressRecipes,
+      cocktails: {
+        ...inProgressRecipes.cocktails,
+        [recipeId]: [ingredientId],
+      },
+    };
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else { // o id já está salvo
+    const recipeIngredients = inProgressRecipes.cocktails[recipeId];
+    const isIngredientDone = recipeIngredients
+      .some((ingredientNumber) => parseInt(ingredientNumber, 10) === ingredientId);
+    if (isIngredientDone) { // ingrediente já está salvo
+      const arrayIds = recipeIngredients
+        .filter((ingredientNumber) => parseInt(ingredientNumber, 10) !== ingredientId);
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        cocktails: { ...inProgressRecipes.cocktails, [recipeId]: [...arrayIds] },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    } else { // ingrediente não está salvo
+      const arrayIds = [...recipeIngredients, ingredientId];
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        cocktails: {
+          ...inProgressRecipes.cocktails,
+          [recipeId]: [...arrayIds],
+        },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    }
+  }
+}
+
+function checkIngredient({ target }, setIsDisable, index, id) {
   if (target.checked) {
     target.parentNode.style = 'text-decoration: line-through';
   } else {
     target.parentNode.style = 'text-decoration: none';
+  }
+  validateButton(setIsDisable);
+  saveProcess(index, id);
+}
+
+function getFavorites(callbackIngredients, callbackFavorite, id) {
+  const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+  if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
+    callbackFavorite(true);
+  }
+  const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  console.log(inProgressRecipes);
+  const savedIngredients = inProgressRecipes ? inProgressRecipes.cocktails[id] : [];
+  if (savedIngredients) {
+    callbackIngredients(savedIngredients);
   }
 }
 
@@ -50,12 +120,13 @@ export default function DrinkByIdInProgress({ match }) {
   const [drink, setDrink] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
+  const [isDisable, setIsDisable] = useState(true);
+  const [ingredientsSaved,
+    setIngredientsSaved] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
-      setFavorite(true);
-    }
+    getFavorites(setIngredientsSaved, setFavorite, id);
   }, [id]);
 
   const ingredients = Object.keys(drink)
@@ -75,10 +146,9 @@ export default function DrinkByIdInProgress({ match }) {
         setDrink(drinkRecipe);
         return drinkRecipe;
       } catch (error) {
-        console.log('ERRO DE REQUISIÇÃO', error);
+        console.log('error', error);
       }
     };
-
     fetchById();
   }, [id]);
 
@@ -88,10 +158,15 @@ export default function DrinkByIdInProgress({ match }) {
     return <span><i>Link copiado!</i></span>;
   }
 
+  const styles = {
+    checked: { textDecoration: 'line-through' },
+    unchecked: { textDecoration: '' },
+  };
+
   return (
     <div className="page-container">
       <div>
-        <h2 data-testid="recipe-category">{drink.strAlcoholic}</h2>
+        <h2 data-testid="recipe-category">{drink.strCategory}</h2>
         <h2 data-testid="recipe-title">{drink.strDrink}</h2>
         <img
           data-testid="recipe-photo"
@@ -106,14 +181,19 @@ export default function DrinkByIdInProgress({ match }) {
               : (
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
-                    htmlFor={ ingredient }
                     data-testid={ `${i}-ingredient-step` }
+                    htmlFor={ ingredient }
+                    style={ ingredientsSaved
+                      .some((ingredientId) => parseInt(ingredientId, 10) === i)
+                      ? styles.checked : styles.unchecked }
                   >
                     <input
-                      onClick={ (event) => checkIngredient(event) }
+                      onClick={ (event) => checkIngredient(event, setIsDisable, i, id) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
+                      defaultChecked={ ingredientsSaved
+                        .some((ingredientId) => parseInt(ingredientId, 10) === i) }
                     />
                     {
                       (measures[i] === '' || !measures[i])
@@ -146,7 +226,14 @@ export default function DrinkByIdInProgress({ match }) {
             favorite ? '/images/blackHeartIcon.svg' : '/images/whiteHeartIcon.svg'
           }
         />
-        <button type="button" data-testid="finish-recipe-btn">Finalizar Receita</button>
+        <button
+          type="button"
+          data-testid="finish-recipe-btn"
+          disabled={ isDisable }
+          onClick={ () => history.push('/receitas-feitas') }
+        >
+          Finalizar Receita
+        </button>
       </div>
     </div>
   );
