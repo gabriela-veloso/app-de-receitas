@@ -51,17 +51,13 @@ function saveProcess(ingredientId, recipeId) {
   const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
   if (!inProgressRecipes) { // localStorage vazio - funciona
     const newProgressRecipes = {
-      meals: {
-        [recipeId]: [ingredientId],
-      },
+      meals: { [recipeId]: [ingredientId] },
     };
     setInProgressRecipesLocalStorage(newProgressRecipes);
-  } else if (!inProgressRecipes.meals) { // localStorage apenas com bebidas - 
+  } else if (!inProgressRecipes.meals) { // localStorage apenas com bebidas -
     const newProgressRecipes = {
       ...inProgressRecipes,
-      meals: {
-        [recipeId]: [ingredientId],
-      },
+      meals: { [recipeId]: [ingredientId] },
     };
     setInProgressRecipesLocalStorage(newProgressRecipes);
   } else if (!inProgressRecipes.meals[recipeId]) { // localStorage sem essa receita - funciona
@@ -109,23 +105,29 @@ function checkIngredient({ target }, setIsDisable, index, id) {
   saveProcess(index, id);
 }
 
+function getFavorites(callbackIngredients, callbackFavorite, id) {
+  const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+  if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
+    callbackFavorite(true);
+  }
+  const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  const savedIngredients = inProgressRecipes ? inProgressRecipes.meals[id] : [];
+  if (savedIngredients) {
+    callbackIngredients(savedIngredients);
+  }
+}
+
 export default function FoodByIdInProgress({ match }) {
   const { foodId: id } = match.params;
   const [meal, setMeal] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(true);
-  const [ingredientsInlocalStorage,
-    setIngredientsInLocalStorage] = useState([]);
+  const [ingredientsSaved,
+    setIngredientsSaved] = useState([]);
 
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
-      setFavorite(true);
-    }
-    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    const savedIngredients = inProgressRecipes ? inProgressRecipes.meals[id] : [];
-    setIngredientsInLocalStorage(savedIngredients);
+    getFavorites(setIngredientsSaved, setFavorite, id);
   }, [id]);
 
   const ingredients = Object.keys(meal)
@@ -148,7 +150,6 @@ export default function FoodByIdInProgress({ match }) {
         console.log('error', error);
       }
     };
-
     fetchById();
   }, [id]);
 
@@ -157,6 +158,11 @@ export default function FoodByIdInProgress({ match }) {
     setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
   }
+
+  const styles = {
+    checked: { textDecoration: 'line-through' },
+    unchecked: { textDecoration: '' },
+  };
 
   return (
     <div className="page-container">
@@ -178,16 +184,17 @@ export default function FoodByIdInProgress({ match }) {
                   <label
                     data-testid={ `${i}-ingredient-step` }
                     htmlFor={ ingredient }
-                    style={ ingredientsInlocalStorage
-                      .some((ingredientId) => ingredientId === i)
-                      ? 'text-decoration: line-through'
-                      : 'text-decoration: none' }
+                    style={ ingredientsSaved
+                      .some((ingredientId) => parseInt(ingredientId, 10) === i)
+                      ? styles.checked : styles.unchecked }
                   >
                     <input
                       onClick={ (event) => checkIngredient(event, setIsDisable, i, id) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
+                      defaultChecked={ ingredientsSaved
+                        .some((ingredientId) => parseInt(ingredientId, 10) === i) }
                     />
                     {
                       (measures[i] === '' || !measures[i])

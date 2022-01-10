@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import copy from 'clipboard-copy';
 import Header from '../components/Header';
 
 export default function FavoriteRecipes() {
+  const [alert, setAlert] = useState(false);
+  function displayAlert() {
+    const THREE = 3000;
+    setTimeout(() => setAlert(false), THREE);
+    return <span><i>Link copiado!</i></span>;
+  }
+
   function renderFavMeals(recipe, index) {
     return (
       <div key={ recipe.id }>
@@ -13,10 +21,15 @@ export default function FavoriteRecipes() {
         <h4 data-testid={ `${index}-horizontal-name` }>{ recipe.name }</h4>
         <input
           data-testid={ `${index}-horizontal-share-btn` }
+          onClick={ () => {
+            copy(`http://localhost:3000/comidas/${recipe.id}`);
+            setAlert(true);
+          } }
           type="image"
           src="/images/shareIcon.svg"
           alt="share-icon"
         />
+        {alert && displayAlert()}
         <input
           data-testid={ `${index}-horizontal-favorite-btn` }
           type="image"
@@ -45,14 +58,22 @@ export default function FavoriteRecipes() {
         <input
           data-testid={ `${index}-horizontal-share-btn` }
           type="image"
+          onClick={ () => {
+            copy(`http://localhost:3000/bebidas/${recipe.id}`);
+            setAlert(true);
+          } }
           src="/images/shareIcon.svg"
           alt="share-icon"
         />
+        {alert && displayAlert()}
         <input
           data-testid={ `${index}-horizontal-favorite-btn` }
           type="image"
           src="/images/blackHeartIcon.svg"
           alt="favorite-icon"
+          // onClick={() => {
+
+          // }}
         />
       </div>
     );
