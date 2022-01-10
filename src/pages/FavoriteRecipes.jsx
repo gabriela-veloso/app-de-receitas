@@ -24,7 +24,7 @@ export default function FavoriteRecipes() {
     setMeals(recipesFav);
     recipesId.forEach((id) => fetchById(id));
     setisMealsFull(true);
-  }, [recipesId]);
+  }, []);
   function ingredientsListMap() {
     console.log(meals.length);
     // meals.map((meal) => console.log(meal));
