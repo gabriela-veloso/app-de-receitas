@@ -76,28 +76,30 @@ export default function MainPage() {
         >
           {category.strCategory}
         </button>))}
-      { meals && meals.slice(0, MAX_NUM).map((elem, index) => (
-        <div
-          tabIndex={ 0 } // SOURCE: encurtador.com.br/bjqHQ
-          role="button"
-          onKeyDown={ () => (history.push(`/comidas/${elem.idMeal}`)) }
-          onClick={ () => (history.push(`/comidas/${elem.idMeal}`)) }
-          data-testid={ `${index}-recipe-card` }
-          key={ elem.idMeal }
-        >
-          <img
-            data-testid={ `${index}-card-img` }
-            src={ elem.strMealThumb }
-            alt="Imagem da receita"
-            width="200"
-          />
-          <h3
-            data-testid={ `${index}-card-name` }
+      <div className="cards">
+        { meals && meals.slice(0, MAX_NUM).map((elem, index) => (
+          <div
+            tabIndex={ 0 } // SOURCE: encurtador.com.br/bjqHQ
+            role="button"
+            onKeyDown={ () => (history.push(`/comidas/${elem.idMeal}`)) }
+            onClick={ () => (history.push(`/comidas/${elem.idMeal}`)) }
+            data-testid={ `${index}-recipe-card` }
+            key={ elem.idMeal }
           >
-            { elem.strMeal }
-          </h3>
-        </div>
-      ))}
+            <img
+              data-testid={ `${index}-card-img` }
+              src={ elem.strMealThumb }
+              alt="Imagem da receita"
+              width="200"
+            />
+            <h3
+              data-testid={ `${index}-card-name` }
+            >
+              { elem.strMeal }
+            </h3>
+          </div>
+        ))}
+      </div>
       <Footer />
     </div>
   );

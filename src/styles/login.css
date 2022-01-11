@@ -5,6 +5,11 @@ body, html {
   padding: 0;
 }
 
+.container {
+  position: relative;
+  top: 150px;
+}
+
 .user_card {
   background: #f39c12;
   border-radius: 5px;
@@ -18,7 +23,6 @@ body, html {
   padding: 10px;
   position: relative;
   width: 350px;
-
 }
 
 .brand_logo_container {
