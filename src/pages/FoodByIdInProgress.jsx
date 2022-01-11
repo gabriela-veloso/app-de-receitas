@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import copy from 'clipboard-copy';
 import '../styles/recommended.css';
+import setInProgressRecipesLocalStorage from '../helpers/helpers';
 
 function handleFavoriteButtonClick(id, meal, favorite, setFavorite) {
   const recipe = {
@@ -45,25 +47,18 @@ function validateButton(setIsDisable) {
 
 function saveProcess(ingredientId, recipeId) {
   const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-
-  if (!inProgressRecipes) {
+  if (!inProgressRecipes) { // localStorage vazio - funciona
     const newProgressRecipes = {
-      meals: {
-        [recipeId]: [ingredientId],
-      },
+      meals: { [recipeId]: [ingredientId] },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else if (!inProgressRecipes.meals) {
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.meals) { // localStorage apenas com bebidas -
     const newProgressRecipes = {
       ...inProgressRecipes,
-      meals: {
-        [recipeId]: [ingredientId],
-      },
+      meals: { [recipeId]: [ingredientId] },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else if (!inProgressRecipes.meals[recipeId]) {
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else if (!inProgressRecipes.meals[recipeId]) { // localStorage sem essa receita - funciona
     const newProgressRecipes = {
       ...inProgressRecipes,
       meals: {
@@ -71,14 +66,30 @@ function saveProcess(ingredientId, recipeId) {
         [recipeId]: [ingredientId],
       },
     };
-
-    localStorage.setItem('inProgressRecipes', JSON.stringify(newProgressRecipes));
-  } else { // aqui <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    setInProgressRecipesLocalStorage(newProgressRecipes);
+  } else { // o id já está salvo
     const recipeIngredients = inProgressRecipes.meals[recipeId];
-    console.log(recipeIngredients);
-    const checkIngredients = recipeIngredients
-      .some((ingredient) => ingredient === ingredientId);
-    console.log(checkIngredients);
+    const isIngredientDone = recipeIngredients
+      .some((ingredientNumber) => parseInt(ingredientNumber, 10) === ingredientId);
+    if (isIngredientDone) { // ingrediente já está salvo
+      const arrayIds = recipeIngredients
+        .filter((ingredientNumber) => parseInt(ingredientNumber, 10) !== ingredientId);
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        meals: { ...inProgressRecipes.meals, [recipeId]: [...arrayIds] },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    } else { // ingrediente não está salvo
+      const arrayIds = [...recipeIngredients, ingredientId];
+      const newProgressRecipes = {
+        ...inProgressRecipes,
+        meals: {
+          ...inProgressRecipes.meals,
+          [recipeId]: [...arrayIds],
+        },
+      };
+      setInProgressRecipesLocalStorage(newProgressRecipes);
+    }
   }
 }
 
@@ -92,18 +103,30 @@ function checkIngredient({ target }, setIsDisable, index, id) {
   saveProcess(index, id);
 }
 
+function getFavorites(callbackIngredients, callbackFavorite, id) {
+  const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+  if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
+    callbackFavorite(true);
+  }
+  const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+  const savedIngredients = inProgressRecipes ? inProgressRecipes.meals[id] : [];
+  if (savedIngredients) {
+    callbackIngredients(savedIngredients);
+  }
+}
+
 export default function FoodByIdInProgress({ match }) {
   const { foodId: id } = match.params;
   const [meal, setMeal] = useState({});
   const [alert, setAlert] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(true);
+  const [ingredientsSaved,
+    setIngredientsSaved] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (favoriteRecipes !== null && favoriteRecipes.some((recipe) => recipe.id === id)) {
-      setFavorite(true);
-    }
+    getFavorites(setIngredientsSaved, setFavorite, id);
   }, [id]);
 
   const ingredients = Object.keys(meal)
@@ -126,7 +149,6 @@ export default function FoodByIdInProgress({ match }) {
         console.log('error', error);
       }
     };
-
     fetchById();
   }, [id]);
 
@@ -135,6 +157,11 @@ export default function FoodByIdInProgress({ match }) {
     setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
   }
+
+  const styles = {
+    checked: { textDecoration: 'line-through' },
+    unchecked: { textDecoration: '' },
+  };
 
   return (
     <div className="page-container">
@@ -154,14 +181,19 @@ export default function FoodByIdInProgress({ match }) {
               : (
                 <div className="ingredient-container" key={ `${ingredient}-${i}` }>
                   <label
-                    htmlFor={ ingredient }
                     data-testid={ `${i}-ingredient-step` }
+                    htmlFor={ ingredient }
+                    style={ ingredientsSaved
+                      .some((ingredientId) => parseInt(ingredientId, 10) === i)
+                      ? styles.checked : styles.unchecked }
                   >
                     <input
                       onClick={ (event) => checkIngredient(event, setIsDisable, i, id) }
                       id={ ingredient }
                       type="checkbox"
                       className="ingredient-step"
+                      defaultChecked={ ingredientsSaved
+                        .some((ingredientId) => parseInt(ingredientId, 10) === i) }
                     />
                     {
                       (measures[i] === '' || !measures[i])
@@ -170,8 +202,7 @@ export default function FoodByIdInProgress({ match }) {
                     }
                   </label>
                 </div>
-              )
-          ))}
+              )))}
         </div>
         <div data-testid="instructions">{meal.strInstructions}</div>
         <input
@@ -198,6 +229,7 @@ export default function FoodByIdInProgress({ match }) {
           type="button"
           data-testid="finish-recipe-btn"
           disabled={ isDisable }
+          onClick={ () => history.push('/receitas-feitas') }
         >
           Finalizar Receita
         </button>

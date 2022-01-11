@@ -5,6 +5,7 @@ import copy from 'clipboard-copy';
 import RecommendedRecipes from '../components/RecommendedRecipes';
 import { fetchRecommendedMeals } from '../services/comidasApi';
 
+const { log } = console;
 function handleFavoriteButtonClick(id, drink, favorite, setFavorite) {
   const recipe = {
     id,
@@ -90,6 +91,20 @@ export default function DrinkById({ match }) {
     setTimeout(() => setAlert(false), THREE);
     return <span><i>Link copiado!</i></span>;
   }
+  function putRecipeInStorage() {
+    const local = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    log(local);
+    if (!local) {
+      const object = { cocktails: { [id]: [] } };
+      return localStorage.setItem('inProgressRecipes', JSON.stringify(object));
+    }
+    if (!local.cocktails) {
+      local.cocktails = { [id]: [] };
+      return localStorage.setItem('inProgressRecipes', JSON.stringify(local));
+    }
+    local.cocktails[id] = [];
+    return localStorage.setItem('inProgressRecipes', JSON.stringify(local));
+  }
 
   return (
     <div className="page-container">
@@ -119,7 +134,10 @@ export default function DrinkById({ match }) {
           type="button"
           className="start-recipe"
           data-testid="start-recipe-btn"
-          onClick={ () => { history.push(`/bebidas/${id}/in-progress`); } }
+          onClick={ () => {
+            putRecipeInStorage();
+            history.push(`/bebidas/${id}/in-progress`);
+          } }
         >
           Iniciar Receita
         </button>
