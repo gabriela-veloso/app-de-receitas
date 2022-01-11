@@ -1,9 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import copy from 'clipboard-copy';
 import Header from '../components/Header';
 
 export default function FavoriteRecipes() {
   const [alert, setAlert] = useState(false);
+  const [favorites, setFavorites] = useState();
+
+  function getFavorites() {
+    return JSON.parse(localStorage.getItem('favoriteRecipes'));
+  }
+
+  useEffect(() => {
+    const arrayFavoriteRecipes = getFavorites();
+    if (arrayFavoriteRecipes && arrayFavoriteRecipes.length > 0) {
+      setFavorites(arrayFavoriteRecipes);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (favorites) {
+      localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+    }
+  }, [favorites]);
+
+  function removeFavorite(id) {
+    const newFavorites = favorites.filter((favorite) => favorite.id !== id);
+    setFavorites(newFavorites);
+    console.log(favorites);
+  }
+
   function displayAlert() {
     const THREE = 3000;
     setTimeout(() => setAlert(false), THREE);
@@ -35,6 +60,7 @@ export default function FavoriteRecipes() {
           type="image"
           src="/images/blackHeartIcon.svg"
           alt="favorite-icon"
+          onClick={ () => removeFavorite(recipe.id) }
         />
         <p
           data-testid={ `${index}-horizontal-top-text` }
@@ -71,19 +97,19 @@ export default function FavoriteRecipes() {
           type="image"
           src="/images/blackHeartIcon.svg"
           alt="favorite-icon"
+          onClick={ () => removeFavorite(recipe.id) }
         />
       </div>
     );
   }
 
   function renderFavoriteRecipes() {
-    const arrayFavoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
     return (
       <div>
         <button type="button" data-testid="filter-by-all-btn">All</button>
         <button type="button" data-testid="filter-by-food-btn">Food</button>
         <button type="button" data-testid="filter-by-drink-btn">Drinks</button>
-        {arrayFavoriteRecipes.map((recipe, index) => {
+        {favorites && favorites.map((recipe, index) => {
           if (recipe.type === 'comida') { return renderFavMeals(recipe, index); }
           return renderFavDrinks(recipe, index);
         })}
@@ -95,22 +121,10 @@ export default function FavoriteRecipes() {
     <div>
       <Header title="Receitas Favoritas" showSearchIcon={ false } />
       <div>
-        { (!JSON.parse(localStorage.getItem('favoriteRecipes'))
-        || JSON.parse(localStorage.getItem('favoriteRecipes')).length === 0)
+        { ((!getFavorites())
+        || getFavorites().length === 0)
           ? global.alert('Você não favoritou nenhuma receita') : renderFavoriteRecipes() }
       </div>
     </div>
   );
 }
-
-// var oldItems = JSON.parse(localStorage.getItem('itemsArray')) || [];
-
-// var newItem = { cocktails: ""};
-
-//  oldItems.push(newItem);
-
-//  localStorage.setItem('itemsArray', JSON.stringify(oldItems));
-
-// var cocktails = {id: {1, 2, 3}}
-// cocktails.senha = {1, 2, 3}
-// console.log(cocktails);
